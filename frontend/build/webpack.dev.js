@@ -6,7 +6,7 @@ module.exports = webpackMerge(commonWebpackConfig, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    contentBase: path.join(__dirname, "../dist"),
+    contentBase: path.resolve(__dirname, "../dist"),
     open: true
   }
 });
