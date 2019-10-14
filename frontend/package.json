@@ -5,7 +5,19 @@
   "scripts": {
     "start": "webpack-dev-server --config build/webpack.dev.js",
     "build": "webpack --config build/webpack.prod.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint --fix --project tsconfig.json --config tslint.json 'src/**/*.ts(x?)'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "npm run lint",
+      "git add"
+    ]
   },
   "author": "Emil Valeev <emil.musician@gmail.com>",
   "license": "MIT",
@@ -15,6 +27,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
     "ts-loader": "^6.2.0",
+    "tslint": "^5.20.0",
     "typescript": "^3.6.4",
     "webpack": "^4.41.1",
     "webpack-cli": "^3.3.9",
@@ -22,6 +35,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "lint-staged": "^9.4.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
   },
