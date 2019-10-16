@@ -30,7 +30,6 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: "My App",
       template: path.resolve(__dirname, "../public/index.html")
     })
   ],
