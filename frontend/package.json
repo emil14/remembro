@@ -32,10 +32,12 @@
     "webpack": "^4.41.1",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.2",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "lint-staged": "^9.4.2"
   },
   "dependencies": {
-    "lint-staged": "^9.4.2",
+    "@material-ui/core": "^4.5.1",
+    "@material-ui/icons": "^4.5.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
   },
