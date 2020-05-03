@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "tsc --watch --pretty --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && cp index.html dist",
+    "test": "test"
+  },
+  "author": "emil14 <emil.musician@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
