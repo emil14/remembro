@@ -7,7 +7,7 @@ import (
 )
 
 func handleAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(w, r)
+	fmt.Println(r.URL)
 }
 
 func main() {
