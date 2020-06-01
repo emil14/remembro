@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
 
-func handleAPI(w http.ResponseWriter, r *http.Request) {
+func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL)
 }
 
@@ -16,9 +17,10 @@ func main() {
 		port = "3000"
 	}
 
-	http.HandleFunc("/api/", handleAPI)
-	http.Handle("/", http.FileServer(http.Dir("./static")))
-
+	http.HandleFunc("/", handler)
 	fmt.Println("Server is running on port: " + port)
-	http.ListenAndServe(":"+port, nil)
+
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
