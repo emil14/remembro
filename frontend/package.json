@@ -4,15 +4,23 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "tsc --watch --pretty --project tsconfig.json",
-    "build": "tsc --project tsconfig.json && cp index.html dist",
+    "start": "parcel index.html",
+    "build": "parcel build.html",
+    "check": "tsc --noEmit",
     "format": "prettier",
     "test": "test"
   },
   "author": "emil14 <emil.musician@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "parcel-bundler": "^1.12.4",
     "prettier": "^2.0.5",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

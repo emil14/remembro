@@ -1,24 +1,13 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": ["ESNext", "DOM", "WebWorker"],
-    "experimentalDecorators": true,
-
     "strict": true,
+
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
 
-    "skipLibCheck": true,
-    "noEmitOnError": true,
-    "assumeChangesOnlyAffectDirectDependencies": true,
-    "removeComments": true,
-
-    "outDir": "dist"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+    "jsx": "react",
+    "skipLibCheck": true
+  }
 }
