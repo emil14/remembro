@@ -1,0 +1,6 @@
+.draftEditor {
+  resize: none;
+  width: 100%;
+  max-width: 720px;
+  padding: 32px;
+}

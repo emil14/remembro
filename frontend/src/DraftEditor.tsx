@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { useState, useRef } from 'react'
 
+import css from './DraftEditor.css'
+
 interface IDraftEditorProps {
   onSelect: (selected: string) => void
 }
@@ -27,6 +29,7 @@ const DraftEditor = (props: IDraftEditorProps) => {
       onChange={e => setTextAreaValue(e.currentTarget.value)}
       onSelect={handleOnSelect}
       ref={textareaRef}
+      className={css.draftEditor}
     />
   )
 }

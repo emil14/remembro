@@ -1,0 +1,21 @@
+@import 'normalize.css';
+
+:root {
+  --main-bg-color: #24262b;
+  --border-color: #828282;
+}
+
+/* TODO: check if this is bad */
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  padding-left: var(--navigator-width);
+  font-family: 'Roboto Mono', monospace;
+  background-color: var(--main-bg-color);
+}
