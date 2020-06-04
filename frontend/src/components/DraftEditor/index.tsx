@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useState, useRef } from 'react'
 
-import css from './DraftEditor.css'
+import css from './index.css'
 
 interface IDraftEditorProps {
   onSelect: (selected: string) => void

@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import css from './Navigator.css'
+import css from './index.css'
 
 interface INavigatorProps {}
 

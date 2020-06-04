@@ -23,7 +23,7 @@ const NoteSaver = (props: INoreSaverProps) => {
 
   useEffect(() => {
     setTextAreaValue(props.initialText)
-  }, [props.initialText, textAreaValue])
+  }, [props.initialText])
 
   const handleSave = () =>
     props.onSave({
