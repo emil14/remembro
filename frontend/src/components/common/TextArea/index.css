@@ -1,0 +1,16 @@
+.draft_editor {
+  resize: none;
+  width: 100%;
+  padding: 32px;
+  color: var(--main-font-color);
+  background-color: transparent;
+  border: var(--common-border);
+}
+
+.draft_editor:hover {
+  border-color: #999999;
+}
+
+.draft_editor:focus {
+  border: 1px solid #f3a549;
+}

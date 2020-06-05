@@ -2,10 +2,12 @@ import * as React from 'react'
 
 import css from './index.css'
 
-interface INavigatorProps {}
+interface INavigatorProps {
+  className: string
+}
 
-const Navigator = (props: INavigatorProps) => (
-  <div className={css.navigator}></div>
+const Navigator = ({ className }: INavigatorProps) => (
+  <div className={`${css.navigator} ${className}`}></div>
 )
 
 export { Navigator }

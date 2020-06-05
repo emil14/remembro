@@ -3,10 +3,6 @@
 }
 
 .navigator {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: var(--navigator-width);
   height: 100%;
   border-right: 1px solid var(--border-color);
 }

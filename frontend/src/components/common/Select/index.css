@@ -1,0 +1,14 @@
+.select {
+  width: 100%;
+  border: 1px solid #828282;
+  background-color: transparent;
+  padding: 14px;
+  color: var(--main-font-color);
+}
+
+.select:hover {
+  cursor: pointer;
+}
+
+.option {
+}

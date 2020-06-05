@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { useState } from 'react'
 
-import { DraftEditor } from './DraftEditor'
+import { TextArea } from './common/TextArea'
 import { NoteSaver, ICreatedNote } from './NoteSaver'
 import { Navigator } from './Navigator'
-
+import { Browser } from './Browser'
 import css from './App.css'
 
 const tags = [
@@ -13,31 +12,30 @@ const tags = [
 ]
 
 export const App = () => {
+  const { useState } = React
   const [draftSelection, setDraftSelection] = useState('')
   const [savedNotes, setSavedNotes] = useState<ICreatedNote[]>([])
 
   return (
     <div className={css.app}>
-      <Navigator />
-
-      <DraftEditor onSelect={setDraftSelection} />
-
-      {draftSelection && (
-        <NoteSaver
-          tags={tags}
-          initialText={draftSelection}
-          onSave={(note: ICreatedNote) =>
-            setSavedNotes(prev => [...prev, note])
-          }
-        />
-      )}
-
-      {savedNotes.map(note => (
-        <>
-          <div>{note.text}</div>
-          <div>{note.tag.name}</div>
-        </>
-      ))}
+      <aside className={css.aside}>
+        <Navigator className={css.aside__navigation} />
+        <Browser className={css.aside__browser} />
+      </aside>
+      <div className={css.content}>
+        <TextArea onSelect={setDraftSelection} placeholder="Go ahead..." />
+      </div>
+      <div className={css.details}>
+        {draftSelection && (
+          <NoteSaver
+            tags={tags}
+            initialText={draftSelection}
+            onSave={(note: ICreatedNote) =>
+              setSavedNotes(prev => [...prev, note])
+            }
+          />
+        )}
+      </div>
     </div>
   )
 }

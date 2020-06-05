@@ -2,7 +2,9 @@
 
 :root {
   --main-bg-color: #24262b;
-  --border-color: #828282;
+  --main-border-color: #828282;
+  --main-font-color: #ffe1c6;
+  --common-border: 1px solid var(--main-border-color);
 }
 
 * {
@@ -10,11 +12,30 @@
 }
 
 .app {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 1fr;
   min-width: 100vw;
   min-height: 100vh;
-  padding-left: var(--navigator-width);
   font-family: 'Roboto Mono', monospace;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--main-font-color);
   background-color: var(--main-bg-color);
+}
+
+.aside {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 1fr;
+  border-right: var(--common-border);
+}
+
+.content {
+  padding: 32px;
+  border-right: var(--common-border);
+}
+
+.details {
+  padding: 32px;
 }

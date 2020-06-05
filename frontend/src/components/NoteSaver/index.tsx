@@ -1,5 +1,8 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import css from './index.css'
+import { TextArea } from '../common/TextArea'
+import { Button } from '../common/Button'
+import { Select } from '../common/Select'
 
 interface ITag {
   id: string
@@ -18,6 +21,7 @@ interface ICreatedNote {
 }
 
 const NoteSaver = (props: INoreSaverProps) => {
+  const { useState, useEffect } = React
   const [textAreaValue, setTextAreaValue] = useState(props.initialText)
   const [selectedTag, setSelectedTag] = useState('')
 
@@ -31,24 +35,22 @@ const NoteSaver = (props: INoreSaverProps) => {
       tag: { name: selectedTag, id: selectedTag }, // FIXME
     })
 
+  const options = props.tags.map(tag => ({ label: tag.name, value: tag.id }))
+
   return (
     <>
-      <textarea
+      <TextArea
         value={textAreaValue}
-        onChange={e => setTextAreaValue(e.currentTarget.value)}
+        onChange={setTextAreaValue}
+        className={css.textarea}
       />
-      <select
-        value={selectedTag}
-        onChange={e => setSelectedTag(e.currentTarget.value)}
-      >
-        <option value="">select tag</option>
-        {props.tags.map(tag => (
-          <option value={tag.id} key={tag.id}>
-            {tag.name}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSave}>save</button>
+      <Select
+        placeholder="select a tag"
+        onSelect={setSelectedTag}
+        options={options}
+        className={css.select}
+      />
+      <Button onClick={handleSave} title="save" />
     </>
   )
 }
