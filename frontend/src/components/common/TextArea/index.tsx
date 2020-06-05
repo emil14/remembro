@@ -7,7 +7,7 @@ interface ITextAreaProps {
   value?: string
   placeholder?: string
   className?: string
-  onChange(value: string): void
+  onChange?(value: string): void
   onSelect?(selected: string): void
 }
 
@@ -24,7 +24,9 @@ const TextArea = (props: ITextAreaProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTextAreaValue(e.currentTarget.value)
-    props.onChange(e.currentTarget.value)
+    if (props.onChange) {
+      props.onChange(e.currentTarget.value)
+    }
   }
 
   const handleOnSelect = () => {
