@@ -1,9 +1,7 @@
 ## Back-End
 
 ```bash
-cd frontend
-npm run build
-cd ../backend
+cd ./backend
 go run backend.go
 ```
 
@@ -15,6 +13,3 @@ npm install
 npm start
 ```
 
-## Scripts
-
-`cp-static` - copy frontend dist (build of needed) to `backend/static`
