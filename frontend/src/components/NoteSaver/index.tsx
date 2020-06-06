@@ -1,8 +1,11 @@
 import * as React from 'react'
-import css from './index.css'
+
 import { TextArea } from '../common/TextArea'
 import { Button } from '../common/Button'
 import { Select } from '../common/Select'
+import ReminderSvg from '../icons/reminder.svg'
+
+import css from './index.css'
 
 interface ITag {
   id: string
@@ -44,13 +47,24 @@ const NoteSaver = (props: INoreSaverProps) => {
         onChange={setTextAreaValue}
         className={css.textarea}
       />
-      <Select
-        placeholder="select a tag"
-        onSelect={setSelectedTag}
-        options={options}
-        className={css.select}
-      />
-      <Button onClick={handleSave} title="save" />
+      <div className={css.buttons}>
+        <Select
+          placeholder="select a tag"
+          onSelect={setSelectedTag}
+          options={options}
+          className={css.select}
+        />
+        <Button
+          onClick={console.log}
+          theme="inverted"
+          className={css.reminder_button}
+        >
+          <ReminderSvg />
+        </Button>
+      </div>
+      <Button onClick={handleSave} className={css.save_button}>
+        save
+      </Button>
     </>
   )
 }

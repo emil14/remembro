@@ -1,4 +1,23 @@
-.textarea,
+.textarea {
+  margin-bottom: var(--normal-offset);
+}
+
 .select {
-  margin-bottom: 16px;
+  margin-right: var(--normal-offset);
+}
+
+.buttons {
+  display: flex;
+  margin-bottom: var(--normal-offset);
+}
+
+.reminder_button {
+  /* width: 100%; */
+  background-color: transparent;
+  padding: 12px;
+  border: 1px solid var(--border-color2);
+}
+
+.save_button {
+  width: 100%;
 }

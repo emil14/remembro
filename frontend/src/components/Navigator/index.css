@@ -6,3 +6,11 @@
   height: 100%;
   border-right: 1px solid var(--border-color);
 }
+
+.nav_button {
+  border-width: 0;
+}
+
+.nav_button:not(:last-child) {
+  border-bottom-width: 1px;
+}

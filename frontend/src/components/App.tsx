@@ -23,7 +23,11 @@ export const App = () => {
         <Browser className={css.aside__browser} />
       </aside>
       <div className={css.content}>
-        <TextArea onSelect={setDraftSelection} placeholder="Go ahead..." />
+        <TextArea
+          onSelect={setDraftSelection}
+          placeholder="Go ahead..."
+          className={css.textarea}
+        />
       </div>
       <div className={css.details}>
         {draftSelection && (

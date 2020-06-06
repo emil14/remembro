@@ -1,12 +1,36 @@
 .button {
-  width: 100%;
-  background: #53bf98;
-  color: #24262b;
-  padding: 14px 0;
+  min-width: var(--button-size);
+  height: var(--button-size);
   line-height: 20px;
-  border: none;
 }
-
 .button:hover {
   cursor: pointer;
+}
+.button:active {
+  transform: scale(0.975);
+}
+.button:focus {
+  outline: none;
+}
+
+.normal {
+  border: none;
+  color: #24262b;
+  background-color: #53bf98;
+}
+.normal:hover {
+  background-color: #6ed2ae;
+}
+.normal:active {
+  background-color: #51b194;
+}
+
+.inverted {
+  background-color: transparent;
+  color: var(--foreground-color2);
+  border: var(--main-border);
+}
+.inverted:hover {
+}
+.inverted:active {
 }

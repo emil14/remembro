@@ -1,17 +1,25 @@
 import * as React from 'react'
 import cn from 'classnames'
+
 import css from './index.css'
 
 interface IButtonProps {
-  title: string
   onClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void
-  classname?: string
+  className?: string
+  theme?: 'normal' | 'inverted'
+  children: React.ReactNode
 }
 
 const Button = (props: IButtonProps) => {
+  const classNames = cn(
+    css.button,
+    props.className,
+    css[props.theme] || css.normal
+  )
+
   return (
-    <button className={cn(css.button, props.classname)} onClick={props.onClick}>
-      {props.title}
+    <button className={classNames} onClick={props.onClick}>
+      {props.children}
     </button>
   )
 }

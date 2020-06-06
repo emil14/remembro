@@ -1,10 +1,10 @@
 .draft_editor {
   resize: none;
   width: 100%;
-  padding: 32px;
-  color: var(--main-font-color);
+  padding: var(--big-offset);
+  color: var(--foreground-color2);
   background-color: transparent;
-  border: var(--common-border);
+  border: var(--main-border);
 }
 
 .draft_editor:hover {

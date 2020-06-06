@@ -1,0 +1,43 @@
+@import 'normalize.css';
+
+:root {
+  /* colors */
+  --clickme-color1: #6ed2ae;
+  --clickme-color2: #53bf98;
+  --clickme-color3: #51b194;
+  --clickme-color4: rgba(83, 191, 152, 0.1);
+
+  --highlight-color1: #f3b949;
+  --highlight-color2: #f3a549;
+  --highlight-color3: #f39149;
+  --highlight-color4: rgba(243, 165, 73, 0.2);
+
+  --info-color1: #5ad6e7;
+  --info-color2: #30b2ea;
+  --info-color3: #4780b5;
+  --info-color4: #4780b5;
+
+  --background-color1: #4f4f4f;
+  --background-color2: #313235;
+  --background-color3: #24262b;
+  --background-color4: #1c1d21;
+
+  --border-color1: #24262b;
+  --border-color2: #828282;
+
+  --foreground-color1: #828282;
+  --foreground-color2: #ffe1c6;
+
+  /* size */
+  --normal-font-size: 16px;
+  --normal-offset: 16px;
+  --big-offset: var(--big-offset);
+  --button-size: 48px;
+
+  /* styles */
+  --main-border: 1px solid var(--border-color2);
+}
+
+* {
+  box-sizing: border-box;
+}
