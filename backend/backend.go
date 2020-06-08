@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL)
 }
 
@@ -17,10 +17,8 @@ func main() {
 		port = "3000"
 	}
 
-	http.HandleFunc("/", handler)
-	fmt.Println("Server is running on port: " + port)
+	http.HandleFunc("/api", indexHandler)
 
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	fmt.Println("Server is running on port: " + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
