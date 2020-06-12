@@ -25,7 +25,7 @@ export const App = () => {
 
   React.useEffect(() => {
     const aux = async () => {
-      const res = await window.fetch('http://localhost:3000/api')
+      const res = await window.fetch('http://localhost:3000/api/records')
       console.log(res.json())
     }
     aux()

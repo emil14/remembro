@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/emil14/remembro/conf"
+	"github.com/emil14/remembro/db"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -12,13 +14,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
+	db.InitDb()
 
 	http.HandleFunc("/api", indexHandler)
-
-	fmt.Println("Server is running on port: " + port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	fmt.Println("Server is running on port: " + conf.ServerPort)
+	log.Fatal(http.ListenAndServe(":"+conf.ServerPort, nil))
 }

@@ -12,7 +12,7 @@ interface ITag {
   name: string
 }
 
-interface INoreSaverProps {
+interface INoteSaverProps {
   initialText: string
   tags: ITag[]
   onSave: (note: ICreatedNote) => void
@@ -23,7 +23,7 @@ interface ICreatedNote {
   tag: ITag
 }
 
-const NoteSaver = (props: INoreSaverProps) => {
+const NoteSaver = (props: INoteSaverProps) => {
   const { useState, useEffect } = React
   const [textAreaValue, setTextAreaValue] = useState(props.initialText)
   const [selectedTag, setSelectedTag] = useState('')
