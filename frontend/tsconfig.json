@@ -8,6 +8,8 @@
     "noFallthroughCasesInSwitch": true,
 
     "jsx": "react",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "lib": ["ESNext", "DOM"]
   }
 }

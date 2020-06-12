@@ -1,4 +1,4 @@
 export const routingMap = {
-  draft: 'draft',
-  explorer: 'explorer',
+  draft: '/draft',
+  explorer: '/explorer',
 }
