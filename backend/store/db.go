@@ -1,4 +1,4 @@
-package db
+package store
 
 import (
 	"database/sql"
@@ -12,17 +12,12 @@ import (
 
 var db *sql.DB
 
-// InitDb initialize database
-func InitDb() {
+func InitDB() func() error {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s port=%s", conf.DBUser, conf.DBPassword, conf.DBName, conf.DBPort)
-	db, err := sql.Open("postgres", connStr)
+	var err error
+	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	rows, err := db.Query("SELECT name FROM records")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(rows)
+	return db.Close
 }
