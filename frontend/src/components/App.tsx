@@ -25,7 +25,7 @@ export const App = () => {
 
   React.useEffect(() => {
     const aux = async () => {
-      const res = await window.fetch('http://localhost:3000/api/records')
+      const res = await fetch('http://localhost:3000/api/records')
       console.log(res.json())
     }
     aux()
@@ -40,7 +40,7 @@ export const App = () => {
         </aside>
         <Switch>
           <Redirect exact from="/" to={routingMap.draft} />
-          <Route path="/draft">
+          <Route path={routingMap.draft}>
             <div className={css.content}>
               <TextArea
                 onSelect={setDraftSelection}
@@ -60,7 +60,7 @@ export const App = () => {
               )}
             </div>
           </Route>
-          <Route path="/explorer">Hello from explorer!</Route>
+          <Route path={routingMap.explorer}>Hello from explorer!</Route>
         </Switch>
       </Router>
     </div>
