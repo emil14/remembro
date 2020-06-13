@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/joho/godotenv/autoload"
+
 	"github.com/emil14/remembro/conf"
 	"github.com/emil14/remembro/store"
 )
@@ -15,12 +17,14 @@ func recordsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(405), 405)
 		return
 	}
-	json, err := json.Marshal(store.GetRecords())
+	data, err := json.Marshal(store.GetRecords())
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(json.MarshalIndent(data, "", "    "))
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(data)
 }
 
 func main() {

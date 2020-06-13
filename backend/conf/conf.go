@@ -17,7 +17,7 @@ var (
 func getEnv(s string) string {
 	v, ok := os.LookupEnv(s)
 	if !ok {
-		log.Fatal("s% environment variable is not defined!")
+		log.Fatal("environment variable " + s + " is not defined!")
 	}
 	fmt.Println(s, v)
 	return v
