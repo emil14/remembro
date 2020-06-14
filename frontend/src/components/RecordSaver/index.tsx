@@ -8,7 +8,7 @@ import { Select } from '../common/Select'
 import ReminderSvg from '../icons/reminder.svg'
 
 import css from './index.css'
-import { createRecordRequested } from '../../store/actions'
+import { createRecordRequested } from '../../store/records/actions'
 
 interface INoteSaverProps {
   initialText: string

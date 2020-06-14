@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom'
 
 import { routingMap } from '../routing'
-import { getRecordsRequested } from '../store/actions'
+import { getRecordsRequested } from '../store/records/actions'
 
 import { TextArea } from './common/TextArea'
 import { RecordSaver } from './RecordSaver'
