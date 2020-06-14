@@ -19,17 +19,25 @@ const tags = [
 ]
 
 export const App = () => {
-  const { useState } = React
+  const { useState, useEffect } = React
   const [draftSelection, setDraftSelection] = useState('')
   const [savedNotes, setSavedNotes] = useState<ICreatedNote[]>([])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const aux = async () => {
       const res = await fetch('http://localhost:3000/api/records')
       console.log(await res.json())
     }
     aux()
   }, [])
+
+  const putNote = async (text: string) => {
+    const res = await fetch('http://localhost:3000/api/records', {
+      method: 'POST',
+      body: JSON.stringify(text),
+    })
+    alert('Success')
+  }
 
   return (
     <div className={css.app}>
@@ -53,9 +61,7 @@ export const App = () => {
                 <NoteSaver
                   tags={tags}
                   initialText={draftSelection}
-                  onSave={(note: ICreatedNote) =>
-                    setSavedNotes(prev => [...prev, note])
-                  }
+                  onSave={n => putNote(n.text)}
                 />
               )}
             </div>

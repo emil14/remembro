@@ -1,44 +1,38 @@
 package store
 
-import (
-	"fmt"
-	"log"
-)
-
 type Record struct {
 	id      int
 	content string
 }
 
-func GetRecords() []*Record {
+func GetRecords() ([]*Record, error) {
 	rows, err := db.Query("SELECT id, content FROM records")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer rows.Close()
 
-	var (
-		id      int
-		name    string
-		records []*Record // records := make([]*Record, 0)
-	)
+	records := []*Record{}
 	for rows.Next() {
+		var (
+			id   int
+			name string
+		)
 		err := rows.Scan(&id, &name)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 		records = append(records, &Record{id, name})
 	}
 
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	fmt.Println(records)
-	return records
+	return records, nil
 }
 
-func CreateRecord() {
-	rows, err := db.Exec("INSERT INTO records(content) VALUES ($1)", "hardcoded content")
-	fmt.Println(rows, err)
+func CreateRecord(content string) error {
+	_, err := db.Exec("INSERT INTO records(content) VALUES ($1)", content)
+	return err
 }
