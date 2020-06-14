@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,6 +9,8 @@ import {
 } from 'react-router-dom'
 
 import { routingMap } from '../routing'
+import { getRecordsRequested, createRecordsRequested } from '../store/actions'
+
 import { TextArea } from './common/TextArea'
 import { NoteSaver, ICreatedNote } from './NoteSaver'
 import { Navigator } from './Navigator'
@@ -19,25 +23,12 @@ const tags = [
 ]
 
 export const App = () => {
-  const { useState, useEffect } = React
   const [draftSelection, setDraftSelection] = useState('')
-  const [savedNotes, setSavedNotes] = useState<ICreatedNote[]>([])
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    const aux = async () => {
-      const res = await fetch('http://localhost:3000/api/records')
-      console.log(await res.json())
-    }
-    aux()
+    dispatch(getRecordsRequested())
   }, [])
-
-  const putNote = async (text: string) => {
-    const res = await fetch('http://localhost:3000/api/records', {
-      method: 'POST',
-      body: JSON.stringify(text),
-    })
-    alert('Success')
-  }
 
   return (
     <div className={css.app}>
@@ -61,7 +52,7 @@ export const App = () => {
                 <NoteSaver
                   tags={tags}
                   initialText={draftSelection}
-                  onSave={n => putNote(n.text)}
+                  onSave={r => dispatch(createRecordsRequested(r.text))}
                 />
               )}
             </div>

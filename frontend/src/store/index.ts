@@ -2,10 +2,13 @@ import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-interface RootState {}
-// type RootAction
+import { rootSaga } from './sagas'
+import { reducer } from './reducers'
 
-const reducer = () => ({})
-const enhancer = composeWithDevTools(applyMiddleware(createSagaMiddleware()))
+const sagaMiddleware = createSagaMiddleware()
+const enhancer = composeWithDevTools(applyMiddleware(sagaMiddleware))
+const store = createStore(reducer, enhancer)
 
-export const store = createStore(reducer, enhancer)
+sagaMiddleware.run(rootSaga)
+
+export { store }
