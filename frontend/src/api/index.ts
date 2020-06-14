@@ -9,4 +9,14 @@ export const api = {
       body: JSON.stringify(content),
     })
   },
+  getTags: async () => {
+    const resp = await fetch('http://localhost:3000/api/tags')
+    return await resp.json()
+  },
+  createTag: async (name: string) => {
+    await fetch('http://localhost:3000/api/tags', {
+      method: 'POST',
+      body: JSON.stringify(name),
+    })
+  },
 }

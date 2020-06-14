@@ -3,48 +3,80 @@ import { call, put, takeEvery, all } from 'redux-saga/effects'
 import { api } from '../api'
 import {
   GetRecordsActionTypes,
-  getRecordsSuccessed,
-  getRecordsFaileed,
+  getRecordsSucceeded,
+  getRecordsFailed,
   CreateRecordRequestedAction,
-  createRecordSuccessed,
+  createRecordSucceeded,
   createRecordFaileed,
   CreateRecordActionTypes,
+  GetTagsActionTypes,
+  CreateTagRequestedAction,
+  createTagSucceeded,
+  createTagFaileed,
+  CreateTagActionTypes,
+  getTagsSucceeded,
+  getTagsFailed,
 } from './actions'
 
-function* getRecordsRequestedSaga() {
+function* getRecordsSaga() {
   try {
     const record = yield call(api.getRecords)
-    yield put(getRecordsSuccessed(record))
+    yield put(getRecordsSucceeded(record))
   } catch (e) {
-    yield put(getRecordsFaileed(e.message))
+    yield put(getRecordsFailed(e.message))
   }
 }
 
 function* watchGetRecordsSaga() {
-  yield takeEvery(
-    GetRecordsActionTypes.GET_RECORDS_REQUESTED,
-    getRecordsRequestedSaga
-  )
+  yield takeEvery(GetRecordsActionTypes.REQUESTED, getRecordsSaga)
 }
 
 function* createRecordsSaga(action: CreateRecordRequestedAction) {
   try {
     yield call(api.createRecord, action.payload.content)
-    yield put(createRecordSuccessed())
+    yield put(createRecordSucceeded())
   } catch (e) {
     yield put(createRecordFaileed(e.message))
   }
 }
 
-function* watchCreateRecordsSaga() {
-  yield takeEvery(
-    CreateRecordActionTypes.CREATE_RECORD_REQUESTED,
-    createRecordsSaga
-  )
+function* watchCreateRecordSaga() {
+  yield takeEvery(CreateRecordActionTypes.REQUESTED, createRecordsSaga)
+}
+
+function* getTagsSaga() {
+  try {
+    const record = yield call(api.getTags)
+    yield put(getTagsSucceeded(record))
+  } catch (e) {
+    yield put(getTagsFailed(e.message))
+  }
+}
+
+function* watchGetTagsSaga() {
+  yield takeEvery(GetTagsActionTypes.REQUESTED, getTagsSaga)
+}
+
+function* createTagSaga(action: CreateTagRequestedAction) {
+  try {
+    yield call(api.createTag, action.payload.content)
+    yield put(createTagSucceeded())
+  } catch (e) {
+    yield put(createTagFaileed(e.message))
+  }
+}
+
+function* watchCreateTagSaga() {
+  yield takeEvery(CreateTagActionTypes.REQUESTED, createTagSaga)
 }
 
 function* rootSaga() {
-  yield all([watchGetRecordsSaga(), watchCreateRecordsSaga()])
+  yield all([
+    watchGetRecordsSaga(),
+    watchCreateRecordSaga(),
+    watchGetTagsSaga(),
+    watchCreateTagSaga(),
+  ])
 }
 
 export { rootSaga }

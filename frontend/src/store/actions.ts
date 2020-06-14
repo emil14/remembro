@@ -1,77 +1,157 @@
 // GET_RECORDS
 export enum GetRecordsActionTypes {
-  GET_RECORDS_REQUESTED = 'GET_RECORDS_REQUESTED',
-  GET_RECORDS_SUCCEEDED = 'GET_RECORDS_SUCCEEDED',
-  GET_RECORDS_FAILED = 'GET_RECORDS_FAILED',
+  REQUESTED = 'GET_RECORDS_REQUESTED',
+  SUCCEEDED = 'GET_RECORDS_SUCCEEDED',
+  FAILED = 'GET_RECORDS_FAILED',
 }
 
 export interface GetRecordsRequestedAction {
-  type: GetRecordsActionTypes.GET_RECORDS_REQUESTED
+  type: typeof GetRecordsActionTypes.REQUESTED
 }
 export interface GetRecordsSucceededAction {
-  type: GetRecordsActionTypes.GET_RECORDS_SUCCEEDED
+  type: typeof GetRecordsActionTypes.SUCCEEDED
   payload: [{ id: string; content: string; created_at: string }]
 }
 export interface GetRecordsFailedAction {
-  type: GetRecordsActionTypes.GET_RECORDS_FAILED
+  type: typeof GetRecordsActionTypes.FAILED
   error: string
 }
-export type GetRecordsActions =
-  | GetRecordsRequestedAction
-  | GetRecordsSucceededAction
-  | GetRecordsFailedAction
 
 export const getRecordsRequested = (): GetRecordsRequestedAction => ({
-  type: GetRecordsActionTypes.GET_RECORDS_REQUESTED,
+  type: GetRecordsActionTypes.REQUESTED,
 })
-export const getRecordsSuccessed = (
-  payload: [{ id: string; content: string; created_at: string }]
-): GetRecordsSucceededAction => ({
-  type: GetRecordsActionTypes.GET_RECORDS_SUCCEEDED,
+export const getRecordsSucceeded = (payload): GetRecordsSucceededAction => ({
+  type: GetRecordsActionTypes.SUCCEEDED,
   payload,
 })
-export const getRecordsFaileed = (error: string): GetRecordsFailedAction => ({
-  type: GetRecordsActionTypes.GET_RECORDS_FAILED,
+export const getRecordsFailed = (error: string): GetRecordsFailedAction => ({
+  type: GetRecordsActionTypes.FAILED,
   error,
 })
 
+export type GetRecordsActions =
+  | CreateRecordRequestedAction
+  | GetRecordsSucceededAction
+  | GetRecordsFailedAction
+
 // CREATE_RECORDS
 export enum CreateRecordActionTypes {
-  CREATE_RECORD_REQUESTED = 'CREATE_RECORD_REQUESTED',
-  CREATE_RECORD_SUCCEEDED = 'CREATE_RECORD_SUCCEEDED',
-  CREATE_RECORD_FAILED = 'CREATE_RECORD_FAILED',
+  REQUESTED = 'CREATE_RECORD_REQUESTED',
+  SUCCEEDED = 'CREATE_RECORD_SUCCEEDED',
+  FAILED = 'CREATE_RECORD_FAILED',
 }
 
 export interface CreateRecordRequestedAction {
-  type: CreateRecordActionTypes.CREATE_RECORD_REQUESTED
+  type: typeof CreateRecordActionTypes.REQUESTED
   payload: { content: string }
 }
 export interface CreateRecordSucceededAction {
-  type: CreateRecordActionTypes.CREATE_RECORD_SUCCEEDED // TODO add payload
+  type: typeof CreateRecordActionTypes.SUCCEEDED // TODO add payload
 }
 export interface CreateRecordFailedAction {
-  type: CreateRecordActionTypes.CREATE_RECORD_FAILED
+  type: typeof CreateRecordActionTypes.FAILED
   error: string
 }
+
+export const createRecordRequested = (
+  content: string
+): CreateRecordRequestedAction => ({
+  type: CreateRecordActionTypes.REQUESTED,
+  payload: { content },
+})
+export const createRecordSucceeded = (): CreateRecordSucceededAction => ({
+  type: CreateRecordActionTypes.SUCCEEDED,
+})
+export const createRecordFaileed = (
+  error: string
+): CreateRecordFailedAction => ({
+  type: CreateRecordActionTypes.FAILED,
+  error,
+})
+
 export type CreateRecordActions =
   | CreateRecordRequestedAction
   | CreateRecordSucceededAction
   | CreateRecordFailedAction
 
-export const createRecordRequested = (
-  content: string
-): CreateRecordRequestedAction => ({
-  type: CreateRecordActionTypes.CREATE_RECORD_REQUESTED,
-  payload: { content },
-})
-export const createRecordSuccessed = (): CreateRecordSucceededAction => ({
-  type: CreateRecordActionTypes.CREATE_RECORD_SUCCEEDED,
-})
-export const createRecordFaileed = (
+export type RecordsActions = GetRecordsActions | CreateRecordActions
+
+// GET_TAGS
+export enum GetTagsActionTypes {
+  REQUESTED = 'GET_TAGS_REQUESTED',
+  SUCCEEDED = 'GET_TAGS_SUCCEEDED',
+  FAILED = 'GET_TAGS_FAILED',
+}
+
+export interface GetTagsRequestedAction {
+  type: typeof GetTagsActionTypes.REQUESTED
+}
+export interface GetTagsSucceededAction {
+  type: typeof GetTagsActionTypes.SUCCEEDED
+  payload: [{ id: string; name: string }]
+}
+export interface GetTagsFailedAction {
+  type: typeof GetTagsActionTypes.FAILED
   error: string
-): CreateRecordFailedAction => ({
-  type: CreateRecordActionTypes.CREATE_RECORD_FAILED,
+}
+
+export const getTagsRequested = (): GetTagsRequestedAction => ({
+  type: GetTagsActionTypes.REQUESTED,
+})
+export const getTagsSucceeded = (
+  payload: [{ id: string; name: string }]
+): GetTagsSucceededAction => ({
+  type: GetTagsActionTypes.SUCCEEDED,
+  payload,
+})
+export const getTagsFailed = (error: string): GetTagsFailedAction => ({
+  type: GetTagsActionTypes.FAILED,
   error,
 })
 
-export type RootAction = GetRecordsActions | CreateRecordActions
+export type GetTagsActions =
+  | GetTagsRequestedAction
+  | GetTagsSucceededAction
+  | GetTagsFailedAction
+
+// CREATE_TAG
+export enum CreateTagActionTypes {
+  REQUESTED = 'CREATE_TAG_REQUESTED',
+  SUCCEEDED = 'CREATE_TAG_SUCCEEDED',
+  FAILED = 'CREATE_TAG_FAILED',
+}
+
+export interface CreateTagRequestedAction {
+  type: typeof CreateTagActionTypes.REQUESTED
+  payload: { content: string }
+}
+export interface CreateTagSucceededAction {
+  type: typeof CreateTagActionTypes.SUCCEEDED // TODO add payload
+}
+export interface CreateTagFailedAction {
+  type: typeof CreateTagActionTypes.FAILED
+  error: string
+}
+
+export const createTagRequested = (
+  content: string
+): CreateTagRequestedAction => ({
+  type: CreateTagActionTypes.REQUESTED,
+  payload: { content },
+})
+export const createTagSucceeded = (): CreateTagSucceededAction => ({
+  type: CreateTagActionTypes.SUCCEEDED,
+})
+export const createTagFaileed = (error: string): CreateTagFailedAction => ({
+  type: CreateTagActionTypes.FAILED,
+  error,
+})
+
+export type CreateTagActions =
+  | CreateTagRequestedAction
+  | CreateTagSucceededAction
+  | CreateTagFailedAction
+
+export type TagsActions = GetTagsActions | CreateTagActions
+
+export type RootAction = RecordsActions | TagsActions
