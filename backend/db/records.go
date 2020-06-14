@@ -5,7 +5,7 @@ import "time"
 type Record struct {
 	ID        int       `json:"id"`
 	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 func GetRecords() ([]Record, error) {
