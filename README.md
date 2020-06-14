@@ -2,7 +2,7 @@
 
 ```bash
 cd ./backend
-go run backend.go
+go run main.go
 ```
 
 ## Front-End
@@ -12,4 +12,3 @@ cd frontend
 npm install
 npm start
 ```
-
