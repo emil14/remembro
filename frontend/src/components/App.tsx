@@ -9,18 +9,13 @@ import {
 } from 'react-router-dom'
 
 import { routingMap } from '../routing'
-import { getRecordsRequested, createRecordsRequested } from '../store/actions'
+import { getRecordsRequested } from '../store/actions'
 
 import { TextArea } from './common/TextArea'
-import { NoteSaver, ICreatedNote } from './NoteSaver'
+import { RecordSaver } from './RecordSaver'
 import { Navigator } from './Navigator'
 import { Browser } from './Browser'
 import css from './App.css'
-
-const tags = [
-  { name: 'it', id: 'it' },
-  { name: 'life', id: 'life' },
-]
 
 export const App = () => {
   const [draftSelection, setDraftSelection] = useState('')
@@ -48,13 +43,7 @@ export const App = () => {
               />
             </div>
             <div className={css.details}>
-              {draftSelection && (
-                <NoteSaver
-                  tags={tags}
-                  initialText={draftSelection}
-                  onSave={r => dispatch(createRecordsRequested(r.text))}
-                />
-              )}
+              {draftSelection && <RecordSaver initialText={draftSelection} />}
             </div>
           </Route>
           <Route path={routingMap.explorer}>Hello from explorer!</Route>

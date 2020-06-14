@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { TextArea } from '../common/TextArea'
 import { Button } from '../common/Button'
@@ -6,39 +8,26 @@ import { Select } from '../common/Select'
 import ReminderSvg from '../icons/reminder.svg'
 
 import css from './index.css'
-
-interface ITag {
-  id: string
-  name: string
-}
+import { createRecordRequested } from '../../store/actions'
 
 interface INoteSaverProps {
   initialText: string
-  tags: ITag[]
-  onSave: (note: ICreatedNote) => void
 }
 
-interface ICreatedNote {
-  text: string
-  tag: ITag
-}
+// TODO replace with redux
+const tmpTags = [
+  { label: 'it', value: 'it' },
+  { label: 'life', value: 'life' },
+]
 
-const NoteSaver = (props: INoteSaverProps) => {
-  const { useState, useEffect } = React
+const RecordSaver = (props: INoteSaverProps) => {
   const [textAreaValue, setTextAreaValue] = useState(props.initialText)
   const [selectedTag, setSelectedTag] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setTextAreaValue(props.initialText)
   }, [props.initialText])
-
-  const handleSave = () =>
-    props.onSave({
-      text: textAreaValue,
-      tag: { name: selectedTag, id: selectedTag }, // FIXME
-    })
-
-  const options = props.tags.map(tag => ({ label: tag.name, value: tag.id }))
 
   return (
     <>
@@ -51,7 +40,7 @@ const NoteSaver = (props: INoteSaverProps) => {
         <Select
           placeholder="select a tag"
           onSelect={setSelectedTag}
-          options={options}
+          options={tmpTags}
           className={css.select}
         />
         <Button
@@ -62,11 +51,14 @@ const NoteSaver = (props: INoteSaverProps) => {
           <ReminderSvg />
         </Button>
       </div>
-      <Button onClick={handleSave} className={css.save_button}>
+      <Button
+        onClick={() => dispatch(createRecordRequested(textAreaValue))}
+        className={css.save_button}
+      >
         save
       </Button>
     </>
   )
 }
 
-export { ITag, ICreatedNote, NoteSaver }
+export { RecordSaver }

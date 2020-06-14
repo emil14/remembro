@@ -58,7 +58,7 @@ export type CreateRecordActions =
   | CreateRecordSucceededAction
   | CreateRecordFailedAction
 
-export const createRecordsRequested = (
+export const createRecordRequested = (
   content: string
 ): CreateRecordRequestedAction => ({
   type: CreateRecordActionTypes.CREATE_RECORD_REQUESTED,
