@@ -1,9 +1,11 @@
 package db
 
+import "database/sql"
+
 type Tag struct {
-	ID          int    `json:"id"`
-	Description string `json:"description"`
-	ParentID    int    `json:"parentId"`
+	ID          int           `json:"id"`
+	Description string        `json:"description"`
+	ParentID    sql.NullInt64 `json:"parentId"`
 	// TODO children ids?
 }
 
@@ -30,8 +32,6 @@ func GetTags() ([]Tag, error) {
 }
 
 func CreateTag(name string) error {
-	// func CreateTag(name string, description string, parentID int) error {
 	_, err := db.Exec("INSERT INTO tags(name) VALUES ($1)", name)
-	// _, err := db.Exec("INSERT INTO tags(name, description, parent_id) VALUES ($1, $2)", name, description, parentID)
 	return err
 }

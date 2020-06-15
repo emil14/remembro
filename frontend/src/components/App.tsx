@@ -10,6 +10,7 @@ import {
 
 import { routingMap } from '../routing'
 import { getRecordsRequested } from '../store/records/actions'
+import { getTagsRequested } from '../store/tags/actions'
 
 import { TextArea } from './common/TextArea'
 import { RecordSaver } from './RecordSaver'
@@ -23,6 +24,7 @@ export const App = () => {
 
   useEffect(() => {
     dispatch(getRecordsRequested())
+    dispatch(getTagsRequested())
   }, [])
 
   return (

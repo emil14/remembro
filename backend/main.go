@@ -88,6 +88,7 @@ func main() {
 
 	http.HandleFunc("/api/records", recordsHandler)
 	http.HandleFunc("/api/tags", tagsHandler)
+
 	fmt.Println("Server is running on port: " + conf.ServerPort)
 	log.Fatal(http.ListenAndServe(":"+conf.ServerPort, nil))
 }
