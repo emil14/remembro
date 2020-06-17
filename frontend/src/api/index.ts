@@ -3,10 +3,13 @@ export const api = {
     const resp = await fetch('http://localhost:3000/api/records')
     return await resp.json()
   },
-  createRecord: async (content: string) => {
+  createRecord: async (content: string, tagsIds: number[]) => {
     await fetch('http://localhost:3000/api/records', {
       method: 'POST',
-      body: JSON.stringify(content),
+      body: JSON.stringify({
+        content,
+        tagsIds,
+      }),
     })
   },
   getTags: async () => {

@@ -6,7 +6,7 @@ import {
 } from './actions'
 
 export interface Record {
-  id: string
+  id: number
   content: string
   created_at: string
 }

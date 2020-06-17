@@ -10,7 +10,7 @@ export interface GetTagsRequestedAction {
 }
 export interface GetTagsSucceededAction {
   type: typeof GetTagsActionTypes.SUCCEEDED
-  payload: [{ id: string; name: string }]
+  payload: [{ id: number; name: string }]
 }
 export interface GetTagsFailedAction {
   type: typeof GetTagsActionTypes.FAILED
@@ -21,7 +21,7 @@ export const getTagsRequested = (): GetTagsRequestedAction => ({
   type: GetTagsActionTypes.REQUESTED,
 })
 export const getTagsSucceeded = (
-  payload: [{ id: string; name: string }]
+  payload: [{ id: number; name: string }]
 ): GetTagsSucceededAction => ({
   type: GetTagsActionTypes.SUCCEEDED,
   payload,
@@ -75,5 +75,3 @@ export type CreateTagActions =
   | CreateTagFailedAction
 
 export type TagsActions = GetTagsActions | CreateTagActions
-
-export type RootAction = RecordsActions | TagsActions

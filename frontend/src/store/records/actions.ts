@@ -10,7 +10,7 @@ export interface GetRecordsRequestedAction {
 }
 export interface GetRecordsSucceededAction {
   type: typeof GetRecordsActionTypes.SUCCEEDED
-  payload: [{ id: string; content: string; created_at: string }]
+  payload: [{ id: number; content: string; created_at: string }]
 }
 export interface GetRecordsFailedAction {
   type: typeof GetRecordsActionTypes.FAILED
@@ -43,7 +43,7 @@ export enum CreateRecordActionTypes {
 
 export interface CreateRecordRequestedAction {
   type: typeof CreateRecordActionTypes.REQUESTED
-  payload: { content: string }
+  payload: { content: string; tagsIds: number[] }
 }
 export interface CreateRecordSucceededAction {
   type: typeof CreateRecordActionTypes.SUCCEEDED // TODO add payload
@@ -54,10 +54,11 @@ export interface CreateRecordFailedAction {
 }
 
 export const createRecordRequested = (
-  content: string
+  content: string,
+  tagsIds: number[]
 ): CreateRecordRequestedAction => ({
   type: CreateRecordActionTypes.REQUESTED,
-  payload: { content },
+  payload: { content, tagsIds },
 })
 export const createRecordSucceeded = (): CreateRecordSucceededAction => ({
   type: CreateRecordActionTypes.SUCCEEDED,

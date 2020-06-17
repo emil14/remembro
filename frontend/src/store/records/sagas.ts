@@ -25,7 +25,7 @@ export function* watchGetRecordsSaga() {
 
 function* createRecordsSaga(action: CreateRecordRequestedAction) {
   try {
-    yield call(api.createRecord, action.payload.content)
+    yield call(api.createRecord, action.payload.content, action.payload.tagsIds)
     yield put(createRecordSucceeded())
   } catch (e) {
     yield put(createRecordFaileed(e.message))

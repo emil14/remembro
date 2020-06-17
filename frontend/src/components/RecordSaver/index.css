@@ -20,3 +20,16 @@
 .save_button {
   width: 100%;
 }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  margin-bottom: 16px;
+  padding: 6px;
+  margin-right: 16px;
+  color: var(--info-color2);
+  background-color: var(--info-color4);
+}

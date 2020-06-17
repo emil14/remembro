@@ -11,6 +11,7 @@ import css from './index.css'
 import { createRecordRequested } from '../../store/records/actions'
 import { RootState } from '../../store/reducers'
 import { Tag } from '../../store/tags/reducers'
+import { select } from 'redux-saga/effects'
 
 interface INoteSaverProps {
   initialText: string
@@ -33,7 +34,7 @@ const RecordSaver = (props: INoteSaverProps) => {
   const handleAddTag = (tag: Tag) => setSelectedTags(prev => [...prev, tag])
 
   const dispatch = useDispatch()
-  const handleSave = () => dispatch(createRecordRequested(textAreaValue))
+  const handleSave = () => dispatch(createRecordRequested(textAreaValue, selectedTags.map(t => t.id))
 
   return (
     <>
@@ -42,8 +43,15 @@ const RecordSaver = (props: INoteSaverProps) => {
         onChange={setTextAreaValue}
         className={css.textarea}
       />
+      {selectedTags.length > 0 && (
+        <div className={css.tags}>
+          {selectedTags.map(t => (
+            <span className={css.tag}>#{t.name}</span>
+          ))}
+        </div>
+      )}
       <div className={css.buttons}>
-        <Select<{ name: string; id: string }>
+        <Select<{ name: string; id: number }>
           options={tags}
           onSelect={handleAddTag}
           valueKey="id"

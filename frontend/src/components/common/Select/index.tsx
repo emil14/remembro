@@ -18,7 +18,7 @@ interface IProps<T> {
   valueKey?: string
 }
 
-function Select<T extends Record<string, string>>(props: IProps<T>) {
+function Select<T extends Record<string, any>>(props: IProps<T>) {
   const labelKey = props.labelKey || 'label'
   const valueKey = props.valueKey || 'value'
 
@@ -31,9 +31,9 @@ function Select<T extends Record<string, string>>(props: IProps<T>) {
     [props.options, labelKey, valueKey]
   )
 
-  const [selectedTag, setSelectedTag] = useState('') // empty string is placeholder option value
+  const [selectedTag, setSelectedTag] = useState('') // empty string is value for placeholder option
   const handleChange = (value: string) => {
-    const option = props.options.find(o => o[valueKey] === value)
+    const option = props.options.find(o => String(o[valueKey]) === value)
     if (option) {
       setSelectedTag(option[valueKey])
       props.onSelect(option)
@@ -50,7 +50,7 @@ function Select<T extends Record<string, string>>(props: IProps<T>) {
         {props.placeholder}
       </option>
       {options.map(option => (
-        <option value={option.value} className={css.option}>
+        <option value={option.value} className={css.option} key={option.value}>
           {option.label}
         </option>
       ))}
