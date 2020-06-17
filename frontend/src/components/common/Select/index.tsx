@@ -1,26 +1,43 @@
 import * as React from 'react'
+import { useMemo, useState } from 'react'
 import cn from 'classnames'
 
 import css from './index.css'
 
-interface ISelectOption {
+interface IOption {
   value: string
   label: string
 }
 
-interface ISelectProps {
-  options: Array<ISelectOption>
-  onSelect(value: string): void
+interface IProps<T> {
+  options: Array<T>
+  onSelect(value: T): void
   placeholder?: string
-  className: string
+  className?: string
+  labelKey?: string
+  valueKey?: string
 }
 
-const Select = (props: ISelectProps) => {
-  const [selectedTag, setSelectedTag] = React.useState('')
+function Select<T extends Record<string, string>>(props: IProps<T>) {
+  const labelKey = props.labelKey || 'label'
+  const valueKey = props.valueKey || 'value'
 
+  const options: IOption[] = useMemo(
+    () =>
+      props.options.map(o => ({
+        label: o[labelKey],
+        value: o[valueKey],
+      })),
+    [props.options, labelKey, valueKey]
+  )
+
+  const [selectedTag, setSelectedTag] = useState('') // empty string is placeholder option value
   const handleChange = (value: string) => {
-    setSelectedTag(value)
-    props.onSelect(props.options.find(o => o.name === value)) // FIXME
+    const option = props.options.find(o => o[valueKey] === value)
+    if (option) {
+      setSelectedTag(option[valueKey])
+      props.onSelect(option)
+    }
   }
 
   return (
@@ -32,7 +49,7 @@ const Select = (props: ISelectProps) => {
       <option value="" className={css.option}>
         {props.placeholder}
       </option>
-      {props.options.map(option => (
+      {options.map(option => (
         <option value={option.value} className={css.option}>
           {option.label}
         </option>

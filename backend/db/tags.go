@@ -4,13 +4,13 @@ import "database/sql"
 
 type Tag struct {
 	ID          int           `json:"id"`
+	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	ParentID    sql.NullInt64 `json:"parentId"`
-	// TODO children ids?
 }
 
 func GetTags() ([]Tag, error) {
-	rows, err := db.Query("SELECT id, description, parent_id FROM tags")
+	rows, err := db.Query("SELECT id, name, description, parent_id FROM tags")
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +19,7 @@ func GetTags() ([]Tag, error) {
 	tags := []Tag{}
 	for rows.Next() {
 		tag := Tag{}
-		if err := rows.Scan(&tag.ID, &tag.Description, &tag.ParentID); err != nil {
+		if err := rows.Scan(&tag.ID, &tag.Name, &tag.Description, &tag.ParentID); err != nil {
 			return nil, err
 		}
 		tags = append(tags, tag)
