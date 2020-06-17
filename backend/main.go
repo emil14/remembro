@@ -31,9 +31,17 @@ func recordsHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write(resp)
 	case "POST":
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(r.Body)
-		if err := db.CreateRecord(buf.String(), time.Now()); err != nil {
+		type createdRecord struct {
+			Content string `json:"content"`
+			TagsIds []int  `json:"tagsIds"`
+		}
+		var c createdRecord
+		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+			fmt.Println(err)
+			http.Error(w, http.StatusText(500), 500)
+			return
+		}
+		if err := db.CreateRecord(c.Content, time.Now(), c.TagsIds); err != nil {
 			fmt.Println(err)
 			http.Error(w, http.StatusText(500), 500)
 			return

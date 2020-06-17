@@ -1,6 +1,9 @@
 package db
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Record struct {
 	ID        int       `json:"id"`
@@ -30,7 +33,12 @@ func GetRecords() ([]Record, error) {
 	return records, nil
 }
 
-func CreateRecord(content string, createdAt time.Time) error {
-	_, err := db.Exec("INSERT INTO records(content, created_at) VALUES ($1, $2)", content, createdAt)
-	return err
+func CreateRecord(content string, createdAt time.Time, tags []int) error {
+	var lastInsertID int
+	res := db.QueryRow("INSERT INTO records(content, created_at) VALUES ($1, $2) RETURNING id", content, createdAt).Scan(&lastInsertID)
+	fmt.Println(res)
+	for i := range tags {
+		db.Exec("INSERT INTO tags_records(tag_id, record_id) VALUES ($1, $2)", tags[i], lastInsertID)
+	}
+	return nil
 }
