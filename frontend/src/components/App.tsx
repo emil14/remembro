@@ -17,6 +17,7 @@ import { RecordSaver } from './RecordSaver'
 import { Navigator } from './Navigator'
 import { TagBrowser } from './TagBrowser'
 import css from './App.css'
+import { ErrorBoundary } from './common/ErrorBoundary'
 
 export function App() {
   const [draftSelection, setDraftSelection] = useState('')
@@ -29,28 +30,30 @@ export function App() {
 
   return (
     <div className={css.app}>
-      <Router>
-        <aside className={css.aside}>
-          <Navigator className={css.aside__navigation} />
-          <TagBrowser className={css.aside__browser} />
-        </aside>
-        <Switch>
-          <Redirect exact from="/" to={routingMap.draft} />
-          <Route path={routingMap.draft}>
-            <div className={css.content}>
-              <TextArea
-                onSelect={setDraftSelection}
-                placeholder="Go ahead..."
-                className={css.textarea}
-              />
-            </div>
-            <div className={css.details}>
-              {draftSelection && <RecordSaver initialText={draftSelection} />}
-            </div>
-          </Route>
-          <Route path={routingMap.explorer}>Hello from explorer!</Route>
-        </Switch>
-      </Router>
+      <ErrorBoundary>
+        <Router>
+          <aside className={css.aside}>
+            <Navigator className={css.aside__navigation} />
+            <TagBrowser />
+          </aside>
+          <Switch>
+            <Redirect exact from="/" to={routingMap.draft} />
+            <Route path={routingMap.draft}>
+              <div className={css.content}>
+                <TextArea
+                  onSelect={setDraftSelection}
+                  placeholder="Go ahead..."
+                  className={css.textarea}
+                />
+              </div>
+              <div className={css.details}>
+                {draftSelection && <RecordSaver initialText={draftSelection} />}
+              </div>
+            </Route>
+            <Route path={routingMap.explorer}>Hello from explorer!</Route>
+          </Switch>
+        </Router>
+      </ErrorBoundary>
     </div>
   )
 }

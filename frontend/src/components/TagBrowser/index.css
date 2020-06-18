@@ -1,0 +1,17 @@
+.tags_browser {
+  padding: var(--big-offset);
+}
+
+.tag {
+  margin-top: 24px;
+}
+.tag:first-child {
+  margin-top: 0;
+}
+.tag:hover {
+  cursor: pointer;
+}
+.tag > .tag {
+  margin-top: 24px;
+  padding-left: 40px;
+}

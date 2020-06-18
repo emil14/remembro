@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import cn from 'classnames'
 
 import { routingMap } from '../../routing'
@@ -13,27 +13,29 @@ interface INavigatorProps {
   className: string
 }
 
-const Navigator = ({ className }: INavigatorProps) => (
-  <nav className={`${css.navigator} ${className}`}>
-    <Link to={routingMap.draft}>
-      <Button
-        className={cn(css.nav_button, css.draft)}
-        onClick={console.log}
-        theme="inverted"
-      >
-        <PencilSvg />
-      </Button>
-    </Link>
-    <Link to={routingMap.explorer}>
-      <Button
-        className={cn(css.nav_button, css.reader)}
-        onClick={console.log}
-        theme="inverted"
-      >
-        <PapersSvg />
-      </Button>
-    </Link>
-  </nav>
-)
+const Navigator = ({ className }: INavigatorProps) => {
+  return (
+    <nav className={`${css.navigator} ${className}`}>
+      <NavLink to={routingMap.draft} activeClassName={css.active_tab}>
+        <Button
+          className={cn(css.draft, css.nav_button)}
+          onClick={console.log}
+          theme="inverted"
+        >
+          <PencilSvg />
+        </Button>
+      </NavLink>
+      <NavLink to={routingMap.explorer} activeClassName={css.active_tab}>
+        <Button
+          className={cn(css.reader, css.nav_button)}
+          onClick={console.log}
+          theme="inverted"
+        >
+          <PapersSvg />
+        </Button>
+      </NavLink>
+    </nav>
+  )
+}
 
 export { Navigator }

@@ -1,4 +1,3 @@
-import { Reducer, combineReducers } from 'redux'
 import {
   GetRecordsActionTypes,
   CreateRecordActionTypes,
@@ -6,18 +5,18 @@ import {
 } from './actions'
 
 export interface Record {
-  id: number
-  content: string
-  created_at: string
+  readonly id: number
+  readonly content: string
+  readonly created_at: string
 }
 
 export interface RecordsState {
-  loading: boolean
-  data: Record[]
-  error: string | null
+  readonly loading: boolean
+  readonly data: Record[]
+  readonly error: string | null
 }
 
-const initialRecordsState: Readonly<RecordsState> = {
+const initialRecordsState: RecordsState = {
   loading: false,
   data: [],
   error: null,

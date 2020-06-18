@@ -8,9 +8,14 @@
 }
 
 .nav_button {
-  border-width: 0;
+  border-width: 0 0 1px 0;
 }
 
-.nav_button:not(:last-child) {
-  border-bottom-width: 1px;
+.active_tab {
+  /* TODO */
 }
+
+/* TODO */
+/* .nav_button:last-child {
+  border-bottom-width: 0;
+} */

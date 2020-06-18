@@ -1,12 +1,35 @@
 import * as React from 'react'
-import { useSelector, shallowEqual } from 'react-redux'
-import { RootState } from '../../store/reducers'
+import { useSelector } from 'react-redux'
+
+import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
+import css from './index.css'
 
 interface IBrowserProps {
   className?: string
 }
 
+interface TagProps {
+  name: string
+  children: TagsTreeNode[]
+}
+
+const Tag = (props: TagProps) => (
+  <div className={css.tag}>
+    #{props.name}
+    {props.children.map(t => (
+      <Tag {...t} key={t.id} />
+    ))}
+  </div>
+)
+
 export function TagBrowser(props: IBrowserProps) {
-  const tags = useSelector((state: RootState) => state.tags.data, shallowEqual)
-  return <div className={props.className}>{tags.map(t => t.name)}</div>
+  const tree = useSelector(tagsTreeSelector)
+
+  return (
+    <div className={css.tags_browser}>
+      {tree.map(t => (
+        <Tag {...t} key={t.id} />
+      ))}
+    </div>
+  )
 }

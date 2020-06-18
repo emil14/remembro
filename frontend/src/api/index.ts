@@ -1,29 +1,30 @@
+import { config } from '../config'
+
 export const api = {
-  getRecords: async () => {
-    const resp = await fetch(
-      `http://localhost:${process.env.BACKEND_PORT}/api/records`
-    )
-    return await resp.json()
-  },
-  createRecord: async (content: string, tagsIds: number[]) => {
-    await fetch(`http://localhost:${process.env.BACKEND_PORT}/api/records`, {
+  // records
+  getRecords: () => fetch(`${config.backendUrl}/records`).then(r => r.json()),
+  createRecord: (content: string, tagsIds: number[]) =>
+    fetch(`${config.backendUrl}/records`, {
       method: 'POST',
       body: JSON.stringify({
         content,
         tagsIds,
       }),
-    })
-  },
+    }),
+  // tags
   getTags: async () => {
-    const resp = await fetch(
-      `http://localhost:${process.env.BACKEND_PORT}/api/tags`
-    )
+    const resp = await fetch(`${config.backendUrl}/tags`)
     return await resp.json()
   },
-  createTag: async (name: string) => {
-    await fetch(`http://localhost:${process.env.BACKEND_PORT}/api/tags`, {
+  createTag: (name: string) =>
+    fetch(`${config.backendUrl}/tags`, {
       method: 'POST',
       body: JSON.stringify(name),
-    })
-  },
+    }),
+  // errors
+  logError: async (errMsg: string) =>
+    fetch(`${config.backendUrl}/errors`, {
+      method: 'POST',
+      body: errMsg,
+    }),
 }

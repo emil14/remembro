@@ -1,0 +1,8 @@
+.sww {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  font-size: var(--big-font-size);
+  line-height: 42px;
+}

@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, Middleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
@@ -7,15 +7,19 @@ import { rootReducer, RootState } from './reducers'
 import { RootAction } from './actions'
 
 const sagaMiddleware = createSagaMiddleware()
-const errorHandlerMiddlware = (store: RootState) => next => (
+const crashReporterMiddlware = (store: RootState) => next => (
   action: RootAction
 ) => {
-  if (action.error) {
-    console.error(action.error)
+  try {
+    next(action)
+  } catch (err) {
+    console.error(err)
   }
 }
 
-const enhancer = composeWithDevTools(applyMiddleware(sagaMiddleware))
+const enhancer = composeWithDevTools(
+  applyMiddleware(sagaMiddleware, crashReporterMiddlware)
+)
 const store = createStore(rootReducer, enhancer)
 
 sagaMiddleware.run(rootSaga)

@@ -5,14 +5,15 @@ import {
 } from './actions'
 
 export interface Tag {
-  id: number
-  name: string
+  readonly id: number
+  readonly name: string
+  readonly parentId: number
 }
 
 export interface TagsState {
-  loading: boolean
-  data: Tag[]
-  error: string | null
+  readonly loading: boolean
+  readonly data: Tag[]
+  readonly error: string | null
 }
 
 const initialTagsState: TagsState = {

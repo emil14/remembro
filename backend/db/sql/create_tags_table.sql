@@ -3,7 +3,7 @@ CREATE TABLE tags (
     id SERIAL,
     name VARCHAR(32) NOT NULL,
     parent_id INT,
-    description VARCHAR(255),
+    description VARCHAR(255) DEFAULT '',
     PRIMARY KEY (id),
     FOREIGN KEY (parent_id) REFERENCES tags(id)
 );

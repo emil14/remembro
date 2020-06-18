@@ -86,6 +86,15 @@ func tagsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func clientErrorsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), 405)
+	}
+	// TODO save error to log
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write([]byte("Error saved"))
+}
+
 func main() {
 	closeDB := db.InitDB()
 	defer func() {
@@ -96,6 +105,7 @@ func main() {
 
 	http.HandleFunc("/api/records", recordsHandler)
 	http.HandleFunc("/api/tags", tagsHandler)
+	http.HandleFunc("/api/clienterrors", clientErrorsHandler)
 
 	fmt.Println("Server is running on port: " + conf.ServerPort)
 	log.Fatal(http.ListenAndServe(":"+conf.ServerPort, nil))
