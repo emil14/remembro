@@ -11,16 +11,18 @@ export const api = {
         tagsIds,
       }),
     }),
+  
   // tags
   getTags: async () => {
     const resp = await fetch(`${config.backendUrl}/tags`)
-    return await resp.json()
+    return resp.json()
   },
   createTag: (name: string) =>
     fetch(`${config.backendUrl}/tags`, {
       method: 'POST',
       body: JSON.stringify(name),
     }),
+  
   // errors
   logError: async (errMsg: string) =>
     fetch(`${config.backendUrl}/errors`, {
