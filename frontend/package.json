@@ -16,6 +16,7 @@
   "devDependencies": {
     "@svgr/parcel-plugin-svgr": "^5.4.0",
     "@types/classnames": "^2.2.10",
+    "@types/node": "^14.0.13",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",

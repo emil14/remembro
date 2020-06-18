@@ -7,21 +7,14 @@ import { Button } from '../common/Button'
 import { Select } from '../common/Select'
 import ReminderSvg from '../icons/reminder.svg'
 
-import css from './index.css'
 import { createRecordRequested } from '../../store/records/actions'
 import { RootState } from '../../store/reducers'
 import { Tag } from '../../store/tags/reducers'
-import { select } from 'redux-saga/effects'
+import css from './index.css'
 
 interface INoteSaverProps {
   initialText: string
 }
-
-// TODO replace with redux
-const tmpTags = [
-  { label: 'it', value: 'it' },
-  { label: 'life', value: 'life' },
-]
 
 const RecordSaver = (props: INoteSaverProps) => {
   const [textAreaValue, setTextAreaValue] = useState(props.initialText)
@@ -46,7 +39,7 @@ const RecordSaver = (props: INoteSaverProps) => {
       {selectedTags.length > 0 && (
         <div className={css.tags}>
           {selectedTags.map(t => (
-            <span className={css.tag}>#{t.name}</span>
+            <span className={css.tag} key={t.id}>#{t.name}</span>
           ))}
         </div>
       )}

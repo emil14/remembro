@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -35,10 +34,15 @@ func GetRecords() ([]Record, error) {
 
 func CreateRecord(content string, createdAt time.Time, tags []int) error {
 	var lastInsertID int
-	res := db.QueryRow("INSERT INTO records(content, created_at) VALUES ($1, $2) RETURNING id", content, createdAt).Scan(&lastInsertID)
-	fmt.Println(res)
+	row := db.QueryRow("INSERT INTO records(content, created_at) VALUES ($1, $2) RETURNING id", content, createdAt)
+	if err := row.Scan(&lastInsertID); err != nil {
+		return err
+	}
 	for i := range tags {
-		db.Exec("INSERT INTO tags_records(tag_id, record_id) VALUES ($1, $2)", tags[i], lastInsertID)
+		_, err := db.Exec("INSERT INTO tags_records(tag_id, record_id) VALUES ($1, $2)", tags[i], lastInsertID)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
