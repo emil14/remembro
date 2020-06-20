@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/emil14/remembro/conf"
-	"github.com/emil14/remembro/db"
+	"github.com/emil14/remembro/models"
 )
 
 func recordsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		rr, err := db.GetRecords()
+		rr, err := models.GetRecords()
 		if err != nil {
 			http.Error(w, http.StatusText(500), 500)
 			fmt.Println(err)
@@ -41,7 +41,7 @@ func recordsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}
-		if err := db.CreateRecord(c.Content, time.Now(), c.TagsIds); err != nil {
+		if err := models.CreateRecord(c.Content, time.Now(), c.TagsIds); err != nil {
 			fmt.Println(err)
 			http.Error(w, http.StatusText(500), 500)
 			return
@@ -56,7 +56,7 @@ func recordsHandler(w http.ResponseWriter, r *http.Request) {
 func tagsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		tt, err := db.GetTags()
+		tt, err := models.GetTags()
 		if err != nil {
 			http.Error(w, http.StatusText(500), 500)
 			fmt.Println(err)
@@ -74,7 +74,7 @@ func tagsHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(r.Body)
-		if err := db.CreateTag(buf.String()); err != nil {
+		if err := models.CreateTag(buf.String()); err != nil {
 			fmt.Println(err)
 			http.Error(w, http.StatusText(500), 500)
 			return
@@ -96,7 +96,7 @@ func clientErrorsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	closeDB := db.InitDB()
+	closeDB := models.InitDB()
 	defer func() {
 		if err := closeDB(); err != nil {
 			log.Fatal(err)
