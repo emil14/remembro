@@ -15,7 +15,7 @@
 
 .normal {
   border: none;
-  color: #24262b;
+  color: var(--background-color3);
   background-color: #53bf98;
 }
 .normal:hover {

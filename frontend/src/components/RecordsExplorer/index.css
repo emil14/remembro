@@ -1,0 +1,21 @@
+.records_explorer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 32px;
+  padding: 32px;
+}
+
+.record {
+  border: var(--main-border);
+  padding: 32px;
+  height: 280px;
+  overflow: hidden;
+  /* ? */
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.record:hover {
+  background-color: var(--highlight-color4);
+  cursor: pointer;
+}

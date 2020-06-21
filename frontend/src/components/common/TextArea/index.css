@@ -12,5 +12,5 @@
 }
 
 .draft_editor:focus {
-  border: 1px solid #f3a549;
+  border: 1px solid var(--highlight-color2);
 }

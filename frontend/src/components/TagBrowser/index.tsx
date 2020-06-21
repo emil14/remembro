@@ -4,31 +4,39 @@ import { useSelector } from 'react-redux'
 import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
 import css from './index.css'
 
-interface IBrowserProps {
-  className?: string
-}
-
 interface TagProps {
-  name: string
-  children: TagsTreeNode[]
+  tag: TagsTreeNode
+  onClick(tag: TagsTreeNode): void
 }
 
-const Tag = (props: TagProps) => (
-  <div className={css.tag}>
-    #{props.name}
-    {props.children.map(t => (
-      <Tag {...t} key={t.id} />
-    ))}
-  </div>
-)
+const Tag = (props: TagProps) => {
+  const handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    props.onClick(props.tag)
+  }
 
-export function TagBrowser(props: IBrowserProps) {
+  return (
+    <div className={css.tag} onClick={handleClick}>
+      #{props.tag.name}
+      {props.tag.children.map(tag => (
+        <Tag tag={tag} key={tag.id} onClick={props.onClick} />
+      ))}
+    </div>
+  )
+}
+
+interface TagBrowserProps {
+  className?: string
+  onSelect(ids: number[]): void
+}
+
+export function TagBrowser(props: TagBrowserProps) {
   const tree = useSelector(tagsTreeSelector)
 
   return (
     <div className={css.tags_browser}>
-      {tree.map(t => (
-        <Tag {...t} key={t.id} />
+      {tree.map(tag => (
+        <Tag tag={tag} onClick={t => props.onSelect([t.id])} key={tag.id} />
       ))}
     </div>
   )

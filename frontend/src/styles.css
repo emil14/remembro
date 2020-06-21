@@ -39,6 +39,11 @@
   --main-border: 1px solid var(--border-color2);
 }
 
+::selection {
+  background-color: var(--highlight-color2);
+  color: var(--background-color3);
+}
+
 * {
   box-sizing: border-box;
 }

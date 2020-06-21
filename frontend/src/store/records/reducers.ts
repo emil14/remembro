@@ -7,7 +7,8 @@ import {
 export interface Record {
   readonly id: number
   readonly content: string
-  readonly created_at: string
+  readonly createdAt: string
+  readonly tagsIds: number[]
 }
 
 export interface RecordsState {

@@ -18,10 +18,14 @@ import { Navigator } from './Navigator'
 import { TagBrowser } from './TagBrowser'
 import css from './App.css'
 import { ErrorBoundary } from './common/ErrorBoundary'
+import { Tag } from '../store/tags/reducers'
+import { RecordsExplorer } from './RecordsExplorer'
 
 export function App() {
-  const [draftSelection, setDraftSelection] = useState('')
   const dispatch = useDispatch()
+  const [draftSelection, setDraftSelection] = useState('')
+  const [selectedTagsIDs, setSelectedTagsIDs] = useState<number[]>([]) // TODO move
+  const [selectedRecord, setSelectedRecord] = useState(null)
 
   useEffect(() => {
     dispatch(getRecordsRequested())
@@ -34,7 +38,7 @@ export function App() {
         <Router>
           <aside className={css.aside}>
             <Navigator className={css.aside__navigation} />
-            <TagBrowser />
+            <TagBrowser onSelect={setSelectedTagsIDs} />
           </aside>
           <Switch>
             <Redirect exact from="/" to={routingMap.draft} />
@@ -50,7 +54,17 @@ export function App() {
                 {draftSelection && <RecordSaver initialText={draftSelection} />}
               </div>
             </Route>
-            <Route path={routingMap.explorer}>Hello from explorer!</Route>
+            <Route path={routingMap.explorer}>
+              <div className={css.content}>
+                <RecordsExplorer
+                  tagsIDs={selectedTagsIDs}
+                  onSelect={setSelectedRecord}
+                />
+              </div>
+              <div className={css.details}>
+                {selectedRecord && <RecordSaver initialText={''} />}
+              </div>
+            </Route>
           </Switch>
         </Router>
       </ErrorBoundary>
