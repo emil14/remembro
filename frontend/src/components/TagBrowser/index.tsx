@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useSelector } from 'react-redux'
 
 import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
+import PlusSvg from '../icons/plus.svg'
 import css from './index.css'
 
 interface TagProps {
@@ -35,6 +36,10 @@ export function TagBrowser(props: TagBrowserProps) {
 
   return (
     <div className={css.tags_browser}>
+      <span className={css.new_tag}>
+        <PlusSvg className={css.plus_icon} />
+        new tag
+      </span>
       {tree.map(tag => (
         <Tag tag={tag} onClick={t => props.onSelect([t.id])} key={tag.id} />
       ))}

@@ -29,7 +29,9 @@ export interface TagsTreeNode extends Tag {
 // FIXME
 const tagsToTree = (tags: Tag[]): TagsTreeNode[] =>
   tags.reduce((acc, tag) => {
-    const children = tags.filter(t => t.parentId.Int64 === tag.id)
+    const children = tags.filter(
+      t => t.parentId.Valid && t.parentId.Int64 === tag.id
+    ) // TODO
     const newTag: TagsTreeNode = { ...tag, children: tagsToTree(children) }
     return [...acc, newTag]
   }, [] as TagsTreeNode[])

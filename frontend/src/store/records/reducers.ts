@@ -4,7 +4,7 @@ import {
   RecordsActions,
 } from './actions'
 
-export interface Record {
+export interface IRecord {
   readonly id: number
   readonly content: string
   readonly createdAt: string
@@ -13,7 +13,7 @@ export interface Record {
 
 export interface RecordsState {
   readonly loading: boolean
-  readonly data: Record[]
+  readonly data: IRecord[]
   readonly error: string | null
 }
 

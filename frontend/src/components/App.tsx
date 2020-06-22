@@ -7,6 +7,8 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom'
+import format from 'date-fns/format'
+import cn from 'classnames'
 
 import { routingMap } from '../routing'
 import { getRecordsRequested } from '../store/records/actions'
@@ -18,15 +20,15 @@ import { Navigator } from './Navigator'
 import { TagBrowser } from './TagBrowser'
 import css from './App.css'
 import { ErrorBoundary } from './common/ErrorBoundary'
-import { Tag } from '../store/tags/reducers'
 import { RecordsExplorer } from './RecordsExplorer'
+import { IRecord } from '../store/records/reducers'
 
 export function App() {
-  const dispatch = useDispatch()
   const [draftSelection, setDraftSelection] = useState('')
-  const [selectedTagsIDs, setSelectedTagsIDs] = useState<number[]>([]) // TODO move
-  const [selectedRecord, setSelectedRecord] = useState(null)
+  const [selectedTagsIDs, setSelectedTagsIDs] = useState<number[]>([])
+  const [selectedRecord, setSelectedRecord] = useState<IRecord | null>(null)
 
+  const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getRecordsRequested())
     dispatch(getTagsRequested())
@@ -43,7 +45,7 @@ export function App() {
           <Switch>
             <Redirect exact from="/" to={routingMap.draft} />
             <Route path={routingMap.draft}>
-              <div className={css.content}>
+              <div className={cn(css.content, css.draft)}>
                 <TextArea
                   onSelect={setDraftSelection}
                   placeholder="Go ahead..."
@@ -51,7 +53,13 @@ export function App() {
                 />
               </div>
               <div className={css.details}>
-                {draftSelection && <RecordSaver initialText={draftSelection} />}
+                {draftSelection && (
+                  <RecordSaver
+                    initialContent={draftSelection}
+                    initialCreatedAt={format(new Date(), 'yyyy.mm.dd')}
+                    initialTagsIds={[]}
+                  />
+                )}
               </div>
             </Route>
             <Route path={routingMap.explorer}>
@@ -62,7 +70,13 @@ export function App() {
                 />
               </div>
               <div className={css.details}>
-                {selectedRecord && <RecordSaver initialText={''} />}
+                {selectedRecord && (
+                  <RecordSaver
+                    initialContent={selectedRecord.content}
+                    initialCreatedAt={selectedRecord.createdAt}
+                    initialTagsIds={selectedRecord.tagsIds}
+                  />
+                )}
               </div>
             </Route>
           </Switch>

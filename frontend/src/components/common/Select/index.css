@@ -2,6 +2,7 @@
   width: 100%;
   padding: 0 0 0 var(--normal-offset);
   border: 1px solid var(--border-color2);
+  border-radius: 4px;
   background-color: transparent;
   color: var(--foreground-color2);
 }

@@ -34,6 +34,7 @@
   --big-font-size: 36px;
   --big-offset: 32px;
   --button-size: 48px;
+  --border-radius: 4px;
 
   /* styles */
   --main-border: 1px solid var(--border-color2);

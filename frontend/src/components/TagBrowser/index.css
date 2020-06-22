@@ -15,3 +15,17 @@
   margin-top: 24px;
   padding-left: 40px;
 }
+
+.new_tag {
+  display: inline-flex;
+  align-items: center;
+  color: #30b2ea;
+}
+
+.new_tag:hover {
+  cursor: pointer;
+}
+
+.plus_icon {
+  margin-right: 16px;
+}

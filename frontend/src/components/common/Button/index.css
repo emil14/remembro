@@ -2,6 +2,7 @@
   min-width: var(--button-size);
   height: var(--button-size);
   line-height: 20px;
+  border-radius: 4px;
 }
 .button:hover {
   cursor: pointer;

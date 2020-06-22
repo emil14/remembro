@@ -16,18 +16,26 @@ interface INavigatorProps {
 const Navigator = ({ className }: INavigatorProps) => {
   return (
     <nav className={`${css.navigator} ${className}`}>
-      <NavLink to={routingMap.draft} activeClassName={css.active_tab}>
+      <NavLink
+        to={routingMap.draft}
+        activeClassName={css.active_tab}
+        className={css.nav_link}
+      >
         <Button
-          className={cn(css.draft, css.nav_button)}
+          className={css.nav_button}
           onClick={console.log}
           theme="inverted"
         >
-          <PencilSvg />
+          <PencilSvg stroke="red" />
         </Button>
       </NavLink>
-      <NavLink to={routingMap.explorer} activeClassName={css.active_tab}>
+      <NavLink
+        to={routingMap.explorer}
+        activeClassName={css.active_tab}
+        className={css.nav_link}
+      >
         <Button
-          className={cn(css.reader, css.nav_button)}
+          className={css.nav_button}
           onClick={console.log}
           theme="inverted"
         >

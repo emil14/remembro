@@ -7,6 +7,7 @@
 
 .record {
   border: var(--main-border);
+  border-radius: var(--border-radius);
   padding: 32px;
   height: 280px;
   overflow: hidden;
@@ -18,4 +19,15 @@
 .record:hover {
   background-color: var(--highlight-color4);
   cursor: pointer;
+}
+
+.record_content {
+  margin-bottom: 16px;
+}
+
+.record_created_at {
+  margin-bottom: 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #999999;
 }

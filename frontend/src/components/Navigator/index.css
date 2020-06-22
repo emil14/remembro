@@ -11,8 +11,16 @@
   border-width: 0 0 1px 0;
 }
 
-.active_tab {
-  /* TODO */
+.active_tab path {
+  stroke: #ffe1c6;
+}
+
+.nav_link:last-child .nav_button {
+  border-bottom: 0;
+}
+
+.nav_button {
+  border-radius: 0;
 }
 
 /* TODO */

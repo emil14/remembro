@@ -5,6 +5,7 @@
   color: var(--foreground-color2);
   background-color: transparent;
   border: var(--main-border);
+  border-radius: 4px;
 }
 
 .draft_editor:hover {
