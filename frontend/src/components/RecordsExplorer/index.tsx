@@ -16,6 +16,7 @@ export function RecordsExplorer(props: IRecordsExplorerProps) {
     (state: RootState) => state.records.data,
     shallowEqual
   )
+  const tags = useSelector((state: RootState) => state.tags.data, shallowEqual)
 
   return (
     <div className={css.records_explorer}>
@@ -27,7 +28,13 @@ export function RecordsExplorer(props: IRecordsExplorerProps) {
         >
           <div className={css.record_created_at}>{record.createdAt}</div>
           <div className={css.record_content}>{record.content}</div>
-          <br />
+          <div className={css.tags}>
+            {tags
+              .filter(tag => record.tagsIds.includes(tag.id))
+              .map(tag => (
+                <span key={tag.id}>{tag.name}</span>
+              ))}
+          </div>
         </div>
       ))}
     </div>
