@@ -34,7 +34,7 @@ export type GetRecordsActions =
   | GetRecordsSucceededAction
   | GetRecordsFailedAction
 
-// CREATE_RECORDS
+// CREATE_RECORD
 export enum CreateRecordActionTypes {
   REQUESTED = 'CREATE_RECORD_REQUESTED',
   SUCCEEDED = 'CREATE_RECORD_SUCCEEDED',
