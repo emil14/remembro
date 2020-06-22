@@ -10,7 +10,7 @@ type Tag struct {
 }
 
 func GetTags() ([]Tag, error) {
-	rows, err := db.Query("SELECT id, name, description, parent_id FROM tags")
+	rows, err := db.Query("SELECT tag_id, name, description, parent_id FROM tag")
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +32,6 @@ func GetTags() ([]Tag, error) {
 }
 
 func CreateTag(name string) error {
-	_, err := db.Exec("INSERT INTO tags(name) VALUES ($1)", name)
+	_, err := db.Exec("INSERT INTO tag(name) VALUES ($1)", name)
 	return err
 }
