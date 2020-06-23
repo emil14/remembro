@@ -42,6 +42,7 @@ func GetRecords() ([]Record, error) {
 	return records, nil
 }
 
+// CreateRecord adds rows to record and tag_record tables and returns a created record
 func CreateRecord(content string, createdAt time.Time, tags []int) error {
 	var lastInsertID int
 	row := db.QueryRow("INSERT INTO record(content, created_at) VALUES ($1, $2) RETURNING record_id", content, createdAt)
