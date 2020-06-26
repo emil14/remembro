@@ -6,12 +6,13 @@ export const api = {
   createRecord: (content: string, tagsIds: number[]) =>
     fetch(`${config.backendUrl}/records`, {
       method: 'POST',
-      body: JSON.stringify({
-        content,
-        tagsIds,
-      }),
+      body: JSON.stringify({ content, tagsIds }),
     }),
-  
+  updateRecord: (id: string, content: string, tagsIds: number[]) =>
+    fetch(`${config.backendUrl}/records`, {
+      method: 'PATCH',
+      body: JSON.stringify({ id, content, tagsIds }),
+    }),
   // tags
   getTags: async () => {
     const resp = await fetch(`${config.backendUrl}/tags`)
@@ -22,7 +23,6 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(name),
     }),
-  
   // errors
   logError: async (errMsg: string) =>
     fetch(`${config.backendUrl}/errors`, {

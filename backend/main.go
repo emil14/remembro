@@ -59,6 +59,29 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Record created")) // TODO return created record
 }
 
+func updateRecord(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PATCH" {
+		type recordToUpdate struct {
+			ID      int    `json:"id"`
+			Content string `json:"content"`
+			TagsIds []int  `json:"tagsIds"`
+		}
+		var c recordToUpdate
+		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, http.StatusText(500), 500)
+			return
+		}
+		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds); err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, http.StatusText(500), 500)
+			return
+		}
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write([]byte("Record updated")) // TODO return created record
+}
+
 func getTags(w http.ResponseWriter, r *http.Request) {
 	tt, err := models.GetTags()
 	if err != nil {
@@ -95,8 +118,10 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Use(loggingMiddleware)
+	r.Use(mux.CORSMethodMiddleware(r))
 	r.HandleFunc("/api/records", getRecords).Methods("GET")
 	r.HandleFunc("/api/records", createRecord).Methods("POST")
+	r.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
 	r.HandleFunc("/api/tags", getTags).Methods("GET")
 	r.HandleFunc("/api/tags", createTag).Methods("POST")
 

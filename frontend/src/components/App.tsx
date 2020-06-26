@@ -11,7 +11,11 @@ import format from 'date-fns/format'
 import cn from 'classnames'
 
 import { routingMap } from '../routing'
-import { getRecordsRequested } from '../store/records/actions'
+import {
+  getRecordsRequested,
+  createRecordRequested,
+  updateRecordRequested,
+} from '../store/records/actions'
 import { getTagsRequested } from '../store/tags/actions'
 
 import { TextArea } from './common/TextArea'
@@ -58,6 +62,9 @@ export function App() {
                     initialContent={draftSelection}
                     initialCreatedAt={format(new Date(), 'yyyy.mm.dd')}
                     initialTagsIds={[]}
+                    onSave={(content, tags) =>
+                      dispatch(createRecordRequested(content, tags))
+                    }
                   />
                 )}
               </div>
@@ -75,6 +82,11 @@ export function App() {
                     initialContent={selectedRecord.content}
                     initialCreatedAt={selectedRecord.createdAt}
                     initialTagsIds={selectedRecord.tagsIds}
+                    onSave={(content, tags) =>
+                      dispatch(
+                        updateRecordRequested(selectedRecord.id, content, tags)
+                      )
+                    }
                   />
                 )}
               </div>

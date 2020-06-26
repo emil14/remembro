@@ -57,3 +57,22 @@ func CreateRecord(content string, createdAt time.Time, tags []int) error {
 	}
 	return nil
 }
+
+// UpdateRecord updates record and tag_record tables
+func UpdateRecord(id int, content string, tags []int) error {
+	_, err := db.Exec("UPDATE record SET content = $1 WHERE record_id = $2", content, id)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("DELETE FROM tag_record WHERE record_id = $1", id)
+	if err != nil {
+		return err
+	}
+	for _, t := range tags {
+		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", t, id)
+		if err != nil {
+			return err
+		}
+	}
+	return err
+}

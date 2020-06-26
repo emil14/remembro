@@ -30,7 +30,7 @@ export const getRecordsFailed = (error: string): GetRecordsFailedAction => ({
 })
 
 export type GetRecordsActions =
-  | CreateRecordRequestedAction
+  | GetRecordsRequestedAction
   | GetRecordsSucceededAction
   | GetRecordsFailedAction
 
@@ -75,4 +75,50 @@ export type CreateRecordActions =
   | CreateRecordSucceededAction
   | CreateRecordFailedAction
 
-export type RecordsActions = GetRecordsActions | CreateRecordActions
+// UPDATE_RECORD
+export enum UpdateRecordActionTypes {
+  REQUESTED = 'UPDATE_RECORD_REQUESTED',
+  SUCCEEDED = 'UPDATE_RECORD_SUCCEEDED',
+  FAILED = 'UPDATE_RECORD_FAILED',
+}
+
+export interface UpdateRecordRequestedAction {
+  type: typeof UpdateRecordActionTypes.REQUESTED
+  payload: { id: number; content: string; tagsIds: number[] }
+}
+export interface UpdateRecordSucceededAction {
+  type: typeof UpdateRecordActionTypes.SUCCEEDED
+}
+export interface UpdateRecordFailedAction {
+  type: typeof UpdateRecordActionTypes.FAILED
+  error: string
+}
+
+export const updateRecordRequested = (
+  id: number,
+  content: string,
+  tagsIds: number[]
+): UpdateRecordRequestedAction => ({
+  type: UpdateRecordActionTypes.REQUESTED,
+  payload: { id, content, tagsIds },
+})
+export const updateRecordSucceeded = (): UpdateRecordSucceededAction => ({
+  type: UpdateRecordActionTypes.SUCCEEDED,
+})
+export const updateRecordFaileed = (
+  error: string
+): UpdateRecordFailedAction => ({
+  type: UpdateRecordActionTypes.FAILED,
+  error,
+})
+
+export type UpdateRecordActions =
+  | UpdateRecordRequestedAction
+  | UpdateRecordSucceededAction
+  | UpdateRecordFailedAction
+
+// ALL
+export type RecordsActions =
+  | GetRecordsActions
+  | CreateRecordActions
+  | UpdateRecordActions
