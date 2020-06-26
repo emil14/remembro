@@ -6,6 +6,7 @@ import (
 	"github.com/lib/pq"
 )
 
+// Record describes record row with aggregated tags ids
 type Record struct {
 	ID        int           `json:"id"`
 	Content   string        `json:"content"`
@@ -13,13 +14,15 @@ type Record struct {
 	TagsIDs   pq.Int64Array `json:"tagsIds"`
 }
 
+// FIXME
 var selectRecordsQuery = `
 	SELECT record.record_id, record.content, record.created_at, ARRAY_AGG(tag.tag_id) AS tags_ids
 	FROM tag
-    INNER JOIN tag_record ON tag.tag_id = tag_record.tag_id
-    INNER JOIN record ON tag_record.record_id = record.record_id
+    INNER JOIN tag_record ON tag_record.tag_id = tag.tag_id
+    FULL OUTER JOIN record ON record.record_id = tag_record.record_id
 	GROUP BY record.record_id, record.content, record.created_at`
 
+// GetRecords joins record, tag and tag_record tables to return records with aggregated tags_ids
 func GetRecords() ([]Record, error) {
 	rows, err := db.Query(selectRecordsQuery)
 	if err != nil {
@@ -42,7 +45,7 @@ func GetRecords() ([]Record, error) {
 	return records, nil
 }
 
-// CreateRecord adds rows to record and tag_record tables and returns a created record
+// CreateRecord adds rows to record and tag_record tables
 func CreateRecord(content string, createdAt time.Time, tags []int) error {
 	var lastInsertID int
 	row := db.QueryRow("INSERT INTO record(content, created_at) VALUES ($1, $2) RETURNING record_id", content, createdAt)

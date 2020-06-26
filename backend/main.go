@@ -25,7 +25,7 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 	rr, err := models.GetRecords()
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return
 	}
 	resp, err := json.Marshal(rr)
