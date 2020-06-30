@@ -2,7 +2,7 @@
 
 ```bash
 cd ./backend
-go run main.go
+CompileDaemon -command="./remembro"
 ```
 
 ## Front-End

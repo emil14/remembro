@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
 import PlusSvg from '../icons/plus.svg'
 import { Badge } from '../common/Badge'
+
 import css from './index.css'
 
 interface TagProps {
