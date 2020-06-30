@@ -1,15 +1,16 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector, shallowEqual } from 'react-redux'
-
-import { TextArea } from '../common/TextArea'
-import { Button } from '../common/Button'
-import { Select } from '../common/Select'
-import ReminderSvg from '../icons/reminder.svg'
+import { useSelector, shallowEqual } from 'react-redux'
 
 import { RootState } from '../../store/reducers'
 import { Tag } from '../../store/tags/reducers'
-import CloseSvg from '../icons/close.svg'
+
+import ReminderSvg from '../icons/reminder.svg'
+import { TextArea } from '../common/TextArea'
+import { Button } from '../common/Button'
+import { Select } from '../common/Select'
+import { Badge } from '../common/Badge'
+
 import css from './index.css'
 
 interface IRecordSaverProps {
@@ -60,15 +61,12 @@ export function RecordSaver(props: IRecordSaverProps) {
         {addedTags.length > 0 && (
           <div className={css.tags}>
             {addedTags.map(t => (
-              <span
+              <Badge
+                name={t.name}
+                onClick={() => handleRemoveTag(t)}
                 className={css.tag}
                 key={t.id}
-                title="Click to remove"
-                onClick={() => handleRemoveTag(t)}
-              >
-                #{t.name}
-                <CloseSvg className={css.close_icon} />
-              </span>
+              />
             ))}
           </div>
         )}

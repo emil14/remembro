@@ -44,7 +44,10 @@ export function App() {
         <Router>
           <aside className={css.aside}>
             <Navigator className={css.aside__navigation} />
-            <TagBrowser onSelect={setSelectedTagsIDs} />
+            <TagBrowser
+              selectedTagsIds={selectedTagsIDs}
+              onSelect={setSelectedTagsIDs}
+            />
           </aside>
           <Switch>
             <Redirect exact from="/" to={routingMap.draft} />

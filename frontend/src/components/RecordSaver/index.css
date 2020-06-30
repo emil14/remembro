@@ -29,14 +29,6 @@
 .tag {
   margin-bottom: 16px;
   margin-right: 16px;
-  padding: 6px;
-  border-radius: 4px;
-  color: var(--info-color2);
-  background-color: var(--info-color4);
-}
-
-.tag:hover {
-  cursor: pointer;
 }
 
 .close_icon {

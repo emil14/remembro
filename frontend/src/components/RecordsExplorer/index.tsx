@@ -3,6 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux'
 
 import { RootState } from '../../store/reducers'
 import { IRecord } from '../../store/records/reducers'
+import { Badge } from '../common/Badge'
 import css from './index.css'
 
 interface IRecordsExplorerProps {
@@ -32,7 +33,7 @@ export function RecordsExplorer(props: IRecordsExplorerProps) {
             {tags
               .filter(tag => record.tagsIds.includes(tag.id))
               .map(tag => (
-                <span key={tag.id}>{tag.name}</span>
+                <Badge name={tag.name} className={css.tag} key={tag.id} />
               ))}
           </div>
         </div>

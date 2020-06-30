@@ -16,6 +16,12 @@
   padding-left: 40px;
 }
 
+.added_tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
 .new_tag {
   display: inline-flex;
   align-items: center;
