@@ -2,7 +2,7 @@
 
 ```bash
 cd ./backend
-CompileDaemon -command="./remembro"
+CompileDaemon -command="./remembro" # make sure you have GOPATH/bin in your PATH
 ```
 
 ## Front-End
