@@ -9,6 +9,7 @@ import {
   CreateTagActionTypes,
   getTagsSucceeded,
   getTagsFailed,
+  getTagsRequested,
 } from './actions'
 
 function* getTagsSaga() {
@@ -28,6 +29,7 @@ function* createTagSaga(action: CreateTagRequestedAction) {
   try {
     yield call(api.createTag, action.payload.content)
     yield put(createTagSucceeded())
+    yield put(getTagsRequested())
   } catch (e) {
     yield put(createTagFaileed(e.message))
   }

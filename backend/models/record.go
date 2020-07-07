@@ -19,7 +19,7 @@ var selectRecordsQuery = `
 	SELECT record.record_id, record.content, record.created_at, ARRAY_AGG(tag.tag_id) AS tags_ids
 	FROM tag
     INNER JOIN tag_record ON tag_record.tag_id = tag.tag_id
-    FULL OUTER JOIN record ON record.record_id = tag_record.record_id
+	INNER JOIN record ON record.record_id = tag_record.record_id
 	GROUP BY record.record_id, record.content, record.created_at`
 
 // GetRecords joins record, tag and tag_record tables to return records with aggregated tags_ids
