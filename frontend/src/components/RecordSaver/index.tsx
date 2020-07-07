@@ -46,6 +46,7 @@ export function RecordSaver(props: IRecordSaverProps) {
 
   const handleAddTag = (tag: Tag) =>
     setSelectedTagsIds(prev => [...prev, tag.id])
+
   const handleRemoveTag = (tag: Tag) =>
     setSelectedTagsIds(prev => prev.filter(tagId => tagId !== tag.id))
 

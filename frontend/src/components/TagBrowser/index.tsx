@@ -15,17 +15,22 @@ const NewTag = () => {
   const [inputValue, setInputValue] = useState('')
   const dispatch = useDispatch()
 
-  const handleCreate = () => {
-    dispatch(createTagRequested(inputValue))
+  const hideInput = () => {
     setIsActive(false)
     setInputValue('')
+  }
+  const handleCreate = () => {
+    dispatch(createTagRequested(inputValue))
+    hideInput()
   }
 
   return isActive ? (
     <>
       <input
+        autoFocus
         value={inputValue}
         onChange={e => setInputValue(e.currentTarget.value)}
+        onBlur={hideInput}
       ></input>
       <Button onClick={handleCreate}>create</Button>
     </>

@@ -38,6 +38,22 @@ export function App() {
     dispatch(getTagsRequested())
   }, [])
 
+  // TODO rename
+  const reset = () => {
+    setDraftSelection('')
+    setSelectedTagsIDs([])
+  }
+  const handleCreateRecord = (content: string, tags: number[]) => {
+    dispatch(createRecordRequested(content, tags))
+    reset()
+  }
+  const handleUpdateRecord = (content: string, tags: number[]) => {
+    if (selectedRecord) {
+      dispatch(updateRecordRequested(selectedRecord.id, content, tags))
+    }
+    reset()
+  }
+
   return (
     <div className={css.app}>
       <ErrorBoundary>
@@ -65,9 +81,7 @@ export function App() {
                     initialContent={draftSelection}
                     initialCreatedAt={format(new Date(), 'yyyy.mm.dd')}
                     initialTagsIds={[]}
-                    onSave={(content, tags) =>
-                      dispatch(createRecordRequested(content, tags))
-                    }
+                    onSave={handleCreateRecord}
                   />
                 )}
               </div>
@@ -85,11 +99,7 @@ export function App() {
                     initialContent={selectedRecord.content}
                     initialCreatedAt={selectedRecord.createdAt}
                     initialTagsIds={selectedRecord.tagsIds}
-                    onSave={(content, tags) =>
-                      dispatch(
-                        updateRecordRequested(selectedRecord.id, content, tags)
-                      )
-                    }
+                    onSave={handleUpdateRecord}
                   />
                 )}
               </div>
