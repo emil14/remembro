@@ -91,6 +91,8 @@ export function RecordSaver(props: IRecordSaverProps) {
         <Button
           onClick={() => props.onSave(content, selectedTagsIds)}
           className={css.save_button}
+          disabled={addedTags.length === 0 || content.length === 0}
+          title="add some tags and content"
         >
           save
         </Button>

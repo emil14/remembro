@@ -8,17 +8,25 @@ interface IButtonProps {
   className?: string
   theme?: 'normal' | 'inverted'
   children: React.ReactNode
+  disabled?: boolean
+  title?: string
 }
 
 const Button = (props: IButtonProps) => {
   const classNames = cn(
     css.button,
     props.className,
-    css[props.theme] || css.normal
+    css[props.theme || 'normal'],
+    { [css.disabled]: props.disabled }
   )
 
   return (
-    <button className={classNames} onClick={props.onClick}>
+    <button
+      className={classNames}
+      onClick={props.onClick}
+      disabled={props.disabled}
+      title={props.title}
+    >
       {props.children}
     </button>
   )
