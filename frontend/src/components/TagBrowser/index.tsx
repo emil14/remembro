@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
@@ -14,26 +14,35 @@ const NewTag = () => {
   const [isActive, setIsActive] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const dispatch = useDispatch()
+  const node = useRef(null)
 
   const hideInput = () => {
     setIsActive(false)
     setInputValue('')
   }
+
+  // handle outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) =>
+      !node.current.contains(e.target) && hideInput()
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   const handleCreate = () => {
     dispatch(createTagRequested(inputValue))
     hideInput()
   }
 
   return isActive ? (
-    <>
+    <div ref={node}>
       <input
         autoFocus
         value={inputValue}
         onChange={e => setInputValue(e.currentTarget.value)}
-        onBlur={hideInput}
       ></input>
       <Button onClick={handleCreate}>create</Button>
-    </>
+    </div>
   ) : (
     <span className={css.new_tag} onClick={() => setIsActive(true)}>
       <PlusSvg className={css.plus_icon} />
