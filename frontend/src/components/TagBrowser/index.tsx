@@ -23,8 +23,11 @@ const NewTag = () => {
 
   // handle outside click
   useEffect(() => {
-    const handler = (e: MouseEvent) =>
-      !node.current.contains(e.target) && hideInput()
+    const handler = (e: MouseEvent) => {
+      if (!node?.current?.contains(e.target)) {
+        hideInput()
+      }
+    }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
