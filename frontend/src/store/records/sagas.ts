@@ -12,9 +12,10 @@ import {
   updateRecordSucceeded,
   updateRecordFaileed,
   UpdateRecordActionTypes,
+  getRecordsRequested,
 } from './actions'
 
-// get records
+// GET RECORDS
 function* getRecordsSaga() {
   try {
     const record = yield call(api.getRecords)
@@ -28,11 +29,12 @@ export function* watchGetRecordsSaga() {
   yield takeEvery(GetRecordsActionTypes.REQUESTED, getRecordsSaga)
 }
 
-// create record
+// CREATE RECORD
 function* createRecordsSaga(action: CreateRecordRequestedAction) {
   try {
     yield call(api.createRecord, action.payload.content, action.payload.tagsIds)
     yield put(createRecordSucceeded())
+    yield put(getRecordsRequested())
   } catch (e) {
     yield put(createRecordFaileed(e.message))
   }
@@ -42,7 +44,7 @@ export function* watchCreateRecordSaga() {
   yield takeEvery(CreateRecordActionTypes.REQUESTED, createRecordsSaga)
 }
 
-// update record
+// UPDATE RECORD
 function* updateRecordsSaga(action: UpdateRecordRequestedAction) {
   try {
     yield call(
@@ -52,6 +54,7 @@ function* updateRecordsSaga(action: UpdateRecordRequestedAction) {
       action.payload.tagsIds
     )
     yield put(updateRecordSucceeded())
+    yield put(getRecordsRequested())
   } catch (e) {
     yield put(updateRecordFaileed(e.message))
   }
