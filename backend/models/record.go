@@ -8,21 +8,29 @@ import (
 
 // Record describes record row with aggregated tags ids
 type Record struct {
-	ID        int           `json:"id"`
-	Content   string        `json:"content"`
-	CreatedAt time.Time     `json:"createdAt"`
-	TagsIDs   pq.Int64Array `json:"tagsIds"`
+	ID           int           `json:"id"`
+	Content      string        `json:"content"`
+	CreatedAt    time.Time     `json:"createdAt"`
+	TagsIDs      pq.Int64Array `json:"tagsIds"`
+	RemindersIds pq.Int64Array `json:"remindersIds"`
 }
 
-// FIXME
 var selectRecordsQuery = `
-	SELECT record.record_id, record.content, record.created_at, ARRAY_AGG(tag.tag_id) AS tags_ids
-	FROM tag
+SELECT
+	record.record_id,
+    record.content,
+    record.created_at,
+    ARRAY_AGG(tag.tag_id) AS tags_ids,
+    (SELECT ARRAY_AGG(reminder.reminder_id) FROM reminder WHERE reminder.record_id = record.record_id) AS reminder_ids
+FROM tag
     INNER JOIN tag_record ON tag_record.tag_id = tag.tag_id
-	INNER JOIN record ON record.record_id = tag_record.record_id
-	GROUP BY record.record_id, record.content, record.created_at`
+    INNER JOIN record ON record.record_id = tag_record.record_id
+GROUP BY
+	record.record_id,
+    record.content,
+    record.created_at`
 
-// GetRecords joins record, tag and tag_record tables to return records with aggregated tags_ids
+// GetRecords joins record, tag, tag_record and reminder tables to return records with related information
 func GetRecords() ([]Record, error) {
 	rows, err := db.Query(selectRecordsQuery)
 	if err != nil {
@@ -33,7 +41,7 @@ func GetRecords() ([]Record, error) {
 	records := []Record{}
 	for rows.Next() {
 		r := Record{}
-		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &r.TagsIDs); err != nil {
+		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &r.TagsIDs, &r.RemindersIds); err != nil {
 			return nil, err
 		}
 		records = append(records, r)
