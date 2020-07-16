@@ -38,20 +38,15 @@ export function App() {
     dispatch(getTagsRequested())
   }, [])
 
-  // TODO rename
-  const reset = () => {
-    setDraftSelection('')
-    setSelectedTagsIDs([])
-  }
   const handleCreateRecord = (content: string, tags: number[]) => {
     dispatch(createRecordRequested(content, tags))
-    reset()
+    setDraftSelection('')
   }
   const handleUpdateRecord = (content: string, tags: number[]) => {
     if (selectedRecord) {
       dispatch(updateRecordRequested(selectedRecord.id, content, tags))
+      setSelectedRecord(null)
     }
-    reset()
   }
 
   return (

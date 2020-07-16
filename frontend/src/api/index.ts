@@ -23,10 +23,4 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(name),
     }),
-  // errors
-  logError: async (errMsg: string) =>
-    fetch(`${config.backendUrl}/errors`, {
-      method: 'POST',
-      body: errMsg,
-    }),
 }

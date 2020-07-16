@@ -8,27 +8,37 @@ import (
 
 // Record describes record row with aggregated tags ids
 type Record struct {
-	ID           int           `json:"id"`
-	Content      string        `json:"content"`
-	CreatedAt    time.Time     `json:"createdAt"`
-	TagsIDs      pq.Int64Array `json:"tagsIds"`
-	RemindersIds pq.Int64Array `json:"remindersIds"`
+	ID        int           `json:"id"`
+	Content   string        `json:"content"`
+	CreatedAt time.Time     `json:"createdAt"`
+	Tags      pq.Int64Array `json:"tags"`
+	Reminders pq.Int64Array `json:"reminders"`
 }
 
 var selectRecordsQuery = `
-SELECT
-	record.record_id,
-    record.content,
-    record.created_at,
-    ARRAY_AGG(tag.tag_id) AS tags_ids,
-    (SELECT ARRAY_AGG(reminder.reminder_id) FROM reminder WHERE reminder.record_id = record.record_id) AS reminder_ids
-FROM tag
-    INNER JOIN tag_record ON tag_record.tag_id = tag.tag_id
-    INNER JOIN record ON record.record_id = tag_record.record_id
-GROUP BY
-	record.record_id,
-    record.content,
-    record.created_at`
+SELECT r.record_id,
+	r.content,
+	r.created_at,
+	t.tags,
+	rm.reminders
+FROM record r
+	LEFT JOIN (
+		SELECT record_id,
+			JSON_AGG(
+				JSON_BUILD_OBJECT('id', t.tag_id, 'name', t.name)
+			) as tags
+		FROM tag t
+			INNER JOIN tag_record tr ON tr.tag_id = t.tag_id
+		GROUP BY tr.record_id
+	) as t ON t.record_id = r.record_id
+	LEFT JOIN (
+		SELECT record_id,
+			JSON_AGG(
+				JSON_BUILD_OBJECT('id', rm.reminder_id, 'time', rm.time)
+			) AS reminders
+		FROM reminder rm
+		GROUP BY record_id
+	) as rm ON rm.record_id = r.record_id`
 
 // GetRecords joins record, tag, tag_record and reminder tables to return records with related information
 func GetRecords() ([]Record, error) {
@@ -41,7 +51,7 @@ func GetRecords() ([]Record, error) {
 	records := []Record{}
 	for rows.Next() {
 		r := Record{}
-		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &r.TagsIDs, &r.RemindersIds); err != nil {
+		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &r.Tags, &r.Reminders); err != nil {
 			return nil, err
 		}
 		records = append(records, r)
