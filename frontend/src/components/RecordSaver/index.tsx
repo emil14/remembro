@@ -6,10 +6,10 @@ import { RootState } from '../../store/reducers'
 import { Tag } from '../../store/tags/reducers'
 
 import ReminderSvg from '../icons/reminder.svg'
-import { TextArea } from '../common/TextArea'
-import { Button } from '../common/Button'
-import { Select } from '../common/Select'
-import { Badge } from '../common/Badge'
+import { TextArea } from '../shared/TextArea'
+import { Button } from '../shared/Button'
+import { Select } from '../shared/Select'
+import { Badge } from '../shared/Badge'
 
 import css from './index.css'
 

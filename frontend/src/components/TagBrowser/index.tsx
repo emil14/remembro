@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
 import PlusSvg from '../icons/plus.svg'
-import { Badge } from '../common/Badge'
-import { Button } from '../common/Button'
+import { Badge } from '../shared/Badge'
+import { Button } from '../shared/Button'
 
 import css from './index.css'
 import { createTagRequested } from '../../store/tags/actions'

@@ -9,9 +9,8 @@
   border: var(--main-border);
   border-radius: var(--border-radius);
   padding: 32px;
-  height: 280px;
+  min-height: 280px;
   overflow: hidden;
-  /* ? */
   word-wrap: break-word;
   word-break: break-all;
 }
@@ -34,4 +33,12 @@
 
 .tags {
   margin-bottom: 24px;
+}
+
+.reminder:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.reminderIcon {
+  margin-right: 16px;
 }

@@ -18,12 +18,12 @@ import {
 } from '../store/records/actions'
 import { getTagsRequested } from '../store/tags/actions'
 
-import { TextArea } from './common/TextArea'
+import { TextArea } from './shared/TextArea'
 import { RecordSaver } from './RecordSaver'
 import { Navigator } from './Navigator'
 import { TagBrowser } from './TagBrowser'
 import css from './App.css'
-import { ErrorBoundary } from './common/ErrorBoundary'
+import { ErrorBoundary } from './shared/ErrorBoundary'
 import { RecordsExplorer } from './RecordsExplorer'
 import { IRecord } from '../store/records/reducers'
 
@@ -93,7 +93,7 @@ export function App() {
                   <RecordSaver
                     initialContent={selectedRecord.content}
                     initialCreatedAt={selectedRecord.createdAt}
-                    initialTagsIds={selectedRecord.tagsIds}
+                    initialTagsIds={selectedRecord.tags}
                     onSave={handleUpdateRecord}
                   />
                 )}

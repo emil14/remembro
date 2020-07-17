@@ -5,7 +5,7 @@ import cn from 'classnames'
 import { routingMap } from '../../routing'
 import PencilSvg from '../icons/pencil.svg'
 import PapersSvg from '../icons/papers.svg'
-import { Button } from '../common/Button'
+import { Button } from '../shared/Button'
 
 import css from './index.css'
 

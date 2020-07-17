@@ -1,3 +1,5 @@
+import { IRecord } from './reducers'
+
 // GET_RECORDS
 export enum GetRecordsActionTypes {
   REQUESTED = 'GET_RECORDS_REQUESTED',
@@ -10,7 +12,7 @@ export interface GetRecordsRequestedAction {
 }
 export interface GetRecordsSucceededAction {
   type: typeof GetRecordsActionTypes.SUCCEEDED
-  payload: [{ id: number; content: string; created_at: string }]
+  payload: IRecord[]
 }
 export interface GetRecordsFailedAction {
   type: typeof GetRecordsActionTypes.FAILED

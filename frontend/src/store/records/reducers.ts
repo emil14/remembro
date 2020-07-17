@@ -9,7 +9,8 @@ export interface IRecord {
   readonly id: number
   readonly content: string
   readonly createdAt: string
-  readonly tagsIds: number[]
+  readonly tags: Array<{ id: number; name: string }>
+  readonly reminders: Array<{ id: number; time: string }>
 }
 
 export interface RecordsState {

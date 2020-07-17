@@ -1,18 +1,26 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
-
-	"github.com/lib/pq"
 )
+
+type tagRow struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+type reminderRow struct {
+	ID   int       `json:"id"`
+	Time time.Time `json:"time"`
+}
 
 // Record describes record row with aggregated tags ids
 type Record struct {
 	ID        int           `json:"id"`
 	Content   string        `json:"content"`
 	CreatedAt time.Time     `json:"createdAt"`
-	Tags      pq.Int64Array `json:"tags"`
-	Reminders pq.Int64Array `json:"reminders"`
+	Tags      []tagRow      `json:"tags"`
+	Reminders []reminderRow `json:"reminders"`
 }
 
 var selectRecordsQuery = `
@@ -50,10 +58,14 @@ func GetRecords() ([]Record, error) {
 
 	records := []Record{}
 	for rows.Next() {
+		var tagsJSON []byte
+		var remindersJSON []byte
 		r := Record{}
-		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &r.Tags, &r.Reminders); err != nil {
+		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &tagsJSON, &remindersJSON); err != nil {
 			return nil, err
 		}
+		json.Unmarshal(tagsJSON, &r.Tags)
+		json.Unmarshal(remindersJSON, &r.Reminders)
 		records = append(records, r)
 	}
 	if err = rows.Err(); err != nil {
