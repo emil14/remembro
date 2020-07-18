@@ -5,5 +5,3 @@ CREATE TABLE reminder (
     time TIMESTAMPTZ
 );
 SET timezone = 'Europe/Moscow';
--- INSERT INTO reminder()
--- VALUES (0, 1, '2016-06-22 19:10:25-07')
