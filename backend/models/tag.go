@@ -2,6 +2,7 @@ package models
 
 import "database/sql"
 
+// Tag represents tag
 type Tag struct {
 	ID          int           `json:"id"`
 	Name        string        `json:"name"`
@@ -9,6 +10,7 @@ type Tag struct {
 	ParentID    sql.NullInt64 `json:"parentId"`
 }
 
+// GetTags returns rows from tag table
 func GetTags() ([]Tag, error) {
 	rows, err := db.Query("SELECT tag_id, name, description, parent_id FROM tag")
 	if err != nil {
@@ -31,6 +33,7 @@ func GetTags() ([]Tag, error) {
 	return tags, nil
 }
 
+// CreateTag inserts values into tag table
 func CreateTag(name string) error {
 	_, err := db.Exec("INSERT INTO tag(name) VALUES ($1)", name)
 	return err
