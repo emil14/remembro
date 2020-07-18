@@ -1,14 +1,14 @@
 import { createSelector } from 'reselect'
 
-import { Tag } from './reducers'
+import { IFullTag } from './reducers'
 import { RootState } from '../reducers'
 
 // tags dict
 export interface TagsDict {
-  [key: string]: Tag
+  [key: string]: IFullTag
 }
 
-const tagsToDict = (tags: Tag[]): Readonly<TagsDict> => {
+const tagsToDict = (tags: IFullTag[]): Readonly<TagsDict> => {
   const result: TagsDict = {}
   for (const tag of tags) {
     result[tag.name] = tag
@@ -22,12 +22,12 @@ export const tagsDictSelector = createSelector(
   tagsToDict
 )
 
-export interface TagsTreeNode extends Tag {
+export interface TagsTreeNode extends IFullTag {
   children: TagsTreeNode[]
 }
 
 // FIXME
-const tagsToTree = (tags: Tag[]): TagsTreeNode[] =>
+const tagsToTree = (tags: IFullTag[]): TagsTreeNode[] =>
   tags.reduce((acc, tag) => {
     const children = tags.filter(
       t => t.parentId.Valid && t.parentId.Int64 === tag.id

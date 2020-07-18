@@ -32,7 +32,7 @@ export function* watchGetRecordsSaga() {
 // CREATE RECORD
 function* createRecordsSaga(action: CreateRecordRequestedAction) {
   try {
-    yield call(api.createRecord, action.payload.content, action.payload.tagsIds)
+    yield call(api.createRecord, action.payload)
     yield put(createRecordSucceeded())
     yield put(getRecordsRequested())
   } catch (e) {

@@ -5,21 +5,34 @@ import {
   UpdateRecordActionTypes,
 } from './actions'
 
+/**
+ * `IRecordTag` represents a subtype of IFullRecord
+ */
+export interface IRecordTag {
+  id: number
+  name: string
+}
+
+export interface IReminder {
+  id: number
+  time: string
+}
+
 export interface IRecord {
-  readonly id: number
-  readonly content: string
-  readonly createdAt: string
-  readonly tags: Array<{ id: number; name: string }>
-  readonly reminders: Array<{ id: number; time: string }>
+  id: number
+  content: string
+  createdAt: string
+  tags: IRecordTag[]
+  reminders: IReminder[]
 }
 
 export interface RecordsState {
-  readonly loading: boolean
-  readonly data: IRecord[]
-  readonly error: string | null
+  loading: boolean
+  data: IRecord[]
+  error: string | null
 }
 
-const initialRecordsState: RecordsState = {
+const initialRecordsState: Readonly<RecordsState> = {
   loading: false,
   data: [],
   error: null,

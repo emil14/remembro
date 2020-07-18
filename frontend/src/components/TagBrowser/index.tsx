@@ -103,7 +103,7 @@ export function TagBrowser({ selectedTagsIds, onSelect }: TagBrowserProps) {
         <div className={css.added_tags}>
           {selectedTags.map(tag => (
             <Badge
-              name={tag.name}
+              name={`#${tag.name}`}
               key={tag.id}
               onClick={() => handleRemoveTag(tag.id)}
             />

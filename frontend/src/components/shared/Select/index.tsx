@@ -31,7 +31,7 @@ function Select<T extends Record<string, any>>(props: IProps<T>) {
     [props.options, labelKey, valueKey]
   )
 
-  const [selectedTag, setSelectedTag] = useState('') // empty string is value for placeholder option
+  const [selectedTag, setSelectedTag] = useState('')
   const handleChange = (value: string) => {
     const option = props.options.find(o => String(o[valueKey]) === value)
     if (option) {

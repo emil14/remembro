@@ -34,7 +34,7 @@ export function RecordsExplorer(props: IRecordsExplorerProps) {
           <div className={css.record_content}>{record.content}</div>
           <div className={css.tags}>
             {record.tags.map(tag => (
-              <Badge name={tag.name} className={css.tag} key={tag.id} />
+              <Badge name={`#${tag.name}`} className={css.tag} key={tag.id} />
             ))}
           </div>
           {record.reminders && (

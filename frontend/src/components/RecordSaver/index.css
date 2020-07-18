@@ -21,12 +21,14 @@
   width: 100%;
 }
 
-.tags {
+.tags,
+.reminders {
   display: flex;
   flex-wrap: wrap;
 }
 
-.tag {
+.tag,
+.reminder {
   margin-bottom: 16px;
   margin-right: 16px;
 }

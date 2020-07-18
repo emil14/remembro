@@ -4,19 +4,19 @@ import {
   CreateTagActionTypes,
 } from './actions'
 
-export interface Tag {
-  readonly id: number
-  readonly name: string
-  readonly parentId: number
+export interface IFullTag {
+  id: number
+  name: string
+  parentId: number
 }
 
 export interface TagsState {
-  readonly loading: boolean
-  readonly data: Tag[]
-  readonly error: string | null
+  loading: boolean
+  data: IFullTag[]
+  error: string | null
 }
 
-const initialTagsState: TagsState = {
+const initialTagsState: Readonly<TagsState> = {
   loading: false,
   data: [],
   error: null,

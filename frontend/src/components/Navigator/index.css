@@ -12,7 +12,7 @@
 }
 
 .active_tab path {
-  stroke: #ffe1c6;
+  stroke: var(--foreground-color2);
 }
 
 .nav_link:last-child .nav_button {

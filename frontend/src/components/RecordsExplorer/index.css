@@ -35,6 +35,11 @@
   margin-bottom: 24px;
 }
 
+.reminder {
+  display: flex;
+  align-items: center;
+}
+
 .reminder:not(:last-child) {
   margin-bottom: 24px;
 }

@@ -1,4 +1,5 @@
 import { IRecord } from './reducers'
+import { ICreatedRecord, IUpdatedRecord } from '../../api'
 
 // GET_RECORDS
 export enum GetRecordsActionTypes {
@@ -45,7 +46,7 @@ export enum CreateRecordActionTypes {
 
 export interface CreateRecordRequestedAction {
   type: typeof CreateRecordActionTypes.REQUESTED
-  payload: { content: string; tagsIds: number[] }
+  payload: ICreatedRecord
 }
 export interface CreateRecordSucceededAction {
   type: typeof CreateRecordActionTypes.SUCCEEDED // TODO add payload
@@ -56,11 +57,10 @@ export interface CreateRecordFailedAction {
 }
 
 export const createRecordRequested = (
-  content: string,
-  tagsIds: number[]
+  record: ICreatedRecord
 ): CreateRecordRequestedAction => ({
   type: CreateRecordActionTypes.REQUESTED,
-  payload: { content, tagsIds },
+  payload: record,
 })
 export const createRecordSucceeded = (): CreateRecordSucceededAction => ({
   type: CreateRecordActionTypes.SUCCEEDED,
@@ -97,12 +97,10 @@ export interface UpdateRecordFailedAction {
 }
 
 export const updateRecordRequested = (
-  id: number,
-  content: string,
-  tagsIds: number[]
+  record: IUpdatedRecord
 ): UpdateRecordRequestedAction => ({
   type: UpdateRecordActionTypes.REQUESTED,
-  payload: { id, content, tagsIds },
+  payload: record,
 })
 export const updateRecordSucceeded = (): UpdateRecordSucceededAction => ({
   type: UpdateRecordActionTypes.SUCCEEDED,

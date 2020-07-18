@@ -26,6 +26,7 @@ import css from './App.css'
 import { ErrorBoundary } from './shared/ErrorBoundary'
 import { RecordsExplorer } from './RecordsExplorer'
 import { IRecord } from '../store/records/reducers'
+import { ICreatedRecord } from '../api'
 
 export function App() {
   const [draftSelection, setDraftSelection] = useState('')
@@ -38,13 +39,15 @@ export function App() {
     dispatch(getTagsRequested())
   }, [])
 
-  const handleCreateRecord = (content: string, tags: number[]) => {
-    dispatch(createRecordRequested(content, tags))
+  const handleCreateRecord = (created: ICreatedRecord) => {
+    dispatch(createRecordRequested(created))
     setDraftSelection('')
   }
-  const handleUpdateRecord = (content: string, tags: number[]) => {
+  const handleUpdateRecord = (updatedRecord: ICreatedRecord) => {
     if (selectedRecord) {
-      dispatch(updateRecordRequested(selectedRecord.id, content, tags))
+      dispatch(
+        updateRecordRequested({ id: selectedRecord.id, ...updatedRecord })
+      )
       setSelectedRecord(null)
     }
   }
@@ -75,7 +78,8 @@ export function App() {
                   <RecordSaver
                     initialContent={draftSelection}
                     initialCreatedAt={format(new Date(), 'yyyy.mm.dd')}
-                    initialTagsIds={[]}
+                    initialTags={[]}
+                    initialReminders={[]}
                     onSave={handleCreateRecord}
                   />
                 )}
@@ -93,7 +97,8 @@ export function App() {
                   <RecordSaver
                     initialContent={selectedRecord.content}
                     initialCreatedAt={selectedRecord.createdAt}
-                    initialTagsIds={selectedRecord.tags}
+                    initialTags={selectedRecord.tags}
+                    initialReminders={selectedRecord.reminders}
                     onSave={handleUpdateRecord}
                   />
                 )}
