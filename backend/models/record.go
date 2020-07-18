@@ -27,8 +27,14 @@ var selectRecordsQuery = `
 SELECT r.record_id,
 	r.content,
 	r.created_at,
-	t.tags,
-	rm.reminders
+	CASE
+		WHEN t.tags IS NULL THEN '[]'::json
+		ELSE t.tags
+	END AS tags,
+	CASE
+		WHEN rm.reminders IS NULL THEN '[]'::json
+		ELSE rm.reminders
+	END AS reminders
 FROM record r
 	LEFT JOIN (
 		SELECT record_id,
