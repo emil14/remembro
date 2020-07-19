@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { useMemo } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
+import { format } from 'date-fns'
 
+import { ICreatedRecord } from '../../api'
 import { useSync } from '../../hooks'
-import { RootState } from '../../store/reducers'
-import { IFullTag } from '../../store/tags/reducers'
-import { IRecordTag, IReminder } from '../../store/records/reducers'
+import { RootState } from '../../store'
+import { IFullTag } from '../../store/tags'
+import { IRecordTag, IReminder } from '../../store/records'
 import ReminderSvg from '../icons/reminder.svg'
 import ReminderSmallSvg from '../icons/reminder_small.svg'
 import { TextArea } from '../shared/TextArea'
@@ -14,8 +16,6 @@ import { Select } from '../shared/Select'
 import { Badge } from '../shared/Badge'
 
 import css from './index.css'
-import { format } from 'date-fns'
-import { ICreatedRecord } from '../../api'
 
 interface IRecordSaverProps {
   initialContent: string

@@ -2,13 +2,12 @@ import * as React from 'react'
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { tagsTreeSelector, TagsTreeNode } from '../../store/tags/selectors'
 import PlusSvg from '../icons/plus.svg'
 import { Badge } from '../shared/Badge'
 import { Button } from '../shared/Button'
-
+import { createTag, IFullTag } from '../../store/tags'
+import { RootState } from '../../store'
 import css from './index.css'
-import { createTagRequested } from '../../store/tags/actions'
 
 const NewTag = () => {
   const [isActive, setIsActive] = useState(false)
@@ -33,7 +32,7 @@ const NewTag = () => {
   }, [])
 
   const handleCreate = () => {
-    dispatch(createTagRequested(inputValue))
+    dispatch(createTag(inputValue))
     hideInput()
   }
 
@@ -55,8 +54,8 @@ const NewTag = () => {
 }
 
 interface TagProps {
-  tag: TagsTreeNode
-  onClick(tag: TagsTreeNode): void
+  tag: IFullTag
+  onClick(tag: IFullTag): void
 }
 
 const Tag = (props: TagProps) => {
@@ -68,34 +67,34 @@ const Tag = (props: TagProps) => {
   return (
     <div className={css.tag} onClick={handleClick}>
       #{props.tag.name}
-      {props.tag.children.map(tag => (
+      {/* {props.tag.children.map(tag => (
         <Tag tag={tag} key={tag.id} onClick={props.onClick} />
-      ))}
+      ))} */}
     </div>
   )
 }
 
 interface TagBrowserProps {
   className?: string
-  onSelect(ids: number[]): void
+  onTagsChange(ids: number[]): void
   selectedTagsIds: number[]
 }
 
-export function TagBrowser({ selectedTagsIds, onSelect }: TagBrowserProps) {
-  const tree = useSelector(tagsTreeSelector)
+export function TagBrowser({ selectedTagsIds, onTagsChange }: TagBrowserProps) {
+  const { data: tags } = useSelector((state: RootState) => state.tags)
   const selectedTags = useMemo(
-    () => tree.filter(tag => selectedTagsIds.includes(tag.id)),
-    [selectedTagsIds, tree]
+    () => tags.filter(tag => selectedTagsIds.includes(tag.id)),
+    [selectedTagsIds, tags]
   )
 
-  const handleAddTag = (t: TagsTreeNode) =>
-    onSelect(
-      selectedTagsIds.includes(t.id)
-        ? selectedTagsIds
-        : [...selectedTagsIds, t.id]
-    )
+  const handleAddTag = (tag: IFullTag) => {
+    if (!selectedTagsIds.includes(tag.id)) {
+      onTagsChange([...selectedTagsIds, tag.id])
+    }
+  }
+
   const handleRemoveTag = (tagId: number) =>
-    onSelect(selectedTagsIds.filter(id => id !== tagId))
+    onTagsChange(selectedTagsIds.filter(id => id !== tagId))
 
   return (
     <div className={css.tags_browser}>
@@ -111,7 +110,7 @@ export function TagBrowser({ selectedTagsIds, onSelect }: TagBrowserProps) {
         </div>
       )}
       <NewTag />
-      {tree.map(tag => (
+      {tags.map(tag => (
         <Tag tag={tag} onClick={handleAddTag} key={tag.id} />
       ))}
     </div>

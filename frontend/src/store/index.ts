@@ -1,11 +1,9 @@
-import { configureStore, Action } from '@reduxjs/toolkit'
-import { ThunkAction } from 'redux-thunk'
-import { recordsReducer, RecordsState } from './records'
-
-type RootState = RecordsState // TODO
+import { configureStore } from '@reduxjs/toolkit'
+import { recordsReducer } from './records'
+import { tagsReducer } from './tags'
 
 export const store = configureStore({
-  reducer: { records: recordsReducer },
+  reducer: { records: recordsReducer, tags: tagsReducer },
 })
 
-export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
+export type RootState = ReturnType<typeof store.getState>

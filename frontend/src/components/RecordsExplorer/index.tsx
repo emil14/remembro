@@ -3,8 +3,8 @@ import { useSelector, shallowEqual } from 'react-redux'
 import format from 'date-fns/format'
 
 import ReminderSVG from '../icons/reminder.svg'
-import { RootState } from '../../store/reducers'
-import { IRecord } from '../../store/records/reducers'
+import { RootState } from '../../store'
+import { IRecord } from '../../store/records'
 import css from './index.css'
 import { Badge } from '../shared/Badge'
 
