@@ -17,6 +17,7 @@ export interface ICreatedRecord {
   tagsIds: number[]
   reminders: string[]
 }
+
 const createRecord = (record: ICreatedRecord) =>
   fetch(`${config.backendUrl}/records`, {
     method: 'POST',
@@ -26,6 +27,7 @@ const createRecord = (record: ICreatedRecord) =>
 export interface IUpdatedRecord extends ICreatedRecord {
   id: number
 }
+
 const updateRecord = (record: IUpdatedRecord) =>
   fetch(`${config.backendUrl}/records`, {
     method: 'PATCH',
