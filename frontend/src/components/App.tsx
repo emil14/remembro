@@ -1,60 +1,64 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom'
-import format from 'date-fns/format'
-import cn from 'classnames'
+import { useDispatch, useSelector } from 'react-redux'
+// import {
+//   BrowserRouter as Router,
+//   Switch,
+//   Route,
+//   Redirect,
+// } from 'react-router-dom'
+// import format from 'date-fns/format'
+// import cn from 'classnames'
 
-import { routingMap } from '../routing'
-import {
-  getRecordsRequested,
-  createRecordRequested,
-  updateRecordRequested,
-} from '../store/records/actions'
-import { getTagsRequested } from '../store/tags/actions'
+// import { routingMap } from '../routing'
+// import {
+//   getRecordsRequested,
+//   createRecordRequested,
+//   updateRecordRequested,
+// } from '../store/records/actions'
+// import { getTagsRequested } from '../store/tags/actions'
 
-import { TextArea } from './shared/TextArea'
-import { RecordSaver } from './RecordSaver'
-import { Navigator } from './Navigator'
-import { TagBrowser } from './TagBrowser'
+// import { TextArea } from './shared/TextArea'
+// import { RecordSaver } from './RecordSaver'
+// import { Navigator } from './Navigator'
+// import { TagBrowser } from './TagBrowser'
 import css from './App.css'
-import { ErrorBoundary } from './shared/ErrorBoundary'
-import { RecordsExplorer } from './RecordsExplorer'
+// import { ErrorBoundary } from './shared/ErrorBoundary'
+// import { RecordsExplorer } from './RecordsExplorer'
 import { IRecord } from '../store/records/reducers'
-import { ICreatedRecord } from '../api'
+// import { ICreatedRecord } from '../api'
+
+import { fetchRecords } from '../store/records'
 
 export function App() {
-  const [draftSelection, setDraftSelection] = useState('')
-  const [selectedTagsIDs, setSelectedTagsIDs] = useState<number[]>([])
-  const [selectedRecord, setSelectedRecord] = useState<IRecord | null>(null)
+  // const [draftSelection, setDraftSelection] = useState('')
+  // const [selectedTagsIDs, setSelectedTagsIDs] = useState<number[]>([])
+  // const [selectedRecord, setSelectedRecord] = useState<IRecord | null>(null)
 
   const dispatch = useDispatch()
+
   useEffect(() => {
-    dispatch(getRecordsRequested())
-    dispatch(getTagsRequested())
+    dispatch(fetchRecords())
+    // dispatch(getRecordsRequested())
+    // dispatch(getTagsRequested())
   }, [])
 
-  const handleCreateRecord = (created: ICreatedRecord) => {
-    dispatch(createRecordRequested(created))
-    setDraftSelection('')
-  }
-  const handleUpdateRecord = (updatedRecord: ICreatedRecord) => {
-    if (selectedRecord) {
-      dispatch(
-        updateRecordRequested({ id: selectedRecord.id, ...updatedRecord })
-      )
-      setSelectedRecord(null)
-    }
-  }
+  // const handleCreateRecord = (created: ICreatedRecord) => {
+  //   dispatch(createRecordRequested(created))
+  //   setDraftSelection('')
+  // }
+  // const handleUpdateRecord = (updatedRecord: ICreatedRecord) => {
+  //   if (selectedRecord) {
+  //     dispatch(
+  //       updateRecordRequested({ id: selectedRecord.id, ...updatedRecord })
+  //     )
+  //     setSelectedRecord(null)
+  //   }
+  // }
 
   return (
     <div className={css.app}>
-      <ErrorBoundary>
+      {/* <ErrorBoundary>
         <Router>
           <aside className={css.aside}>
             <Navigator className={css.aside__navigation} />
@@ -106,7 +110,7 @@ export function App() {
             </Route>
           </Switch>
         </Router>
-      </ErrorBoundary>
+      </ErrorBoundary> */}
     </div>
   )
 }

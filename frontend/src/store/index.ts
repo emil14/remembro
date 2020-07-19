@@ -1,14 +1,11 @@
-import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { configureStore, Action } from '@reduxjs/toolkit'
+import { ThunkAction } from 'redux-thunk'
+import { recordsReducer, RecordsState } from './records'
 
-import { rootSaga } from './sagas'
-import { rootReducer } from './reducers'
+type RootState = RecordsState // TODO
 
-const sagaMiddleware = createSagaMiddleware()
-const enhancer = composeWithDevTools(applyMiddleware(sagaMiddleware))
-const store = createStore(rootReducer, enhancer)
+export const store = configureStore({
+  reducer: { records: recordsReducer },
+})
 
-sagaMiddleware.run(rootSaga)
-
-export { store }
+export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
