@@ -28,7 +28,7 @@ interface IRecordSaverProps {
 export function RecordSaver(props: IRecordSaverProps) {
   const [content, setContent] = useSync(props.initialContent)
   const [addedTags, setAddedTags] = useSync(props.initialTags)
-  const [addedReminders] = useSync(props.initialReminders)
+  const [addedReminders, setAddedReminders] = useSync(props.initialReminders)
 
   const allTags = useSelector(
     (state: RootState) => state.tags.data,
@@ -55,7 +55,7 @@ export function RecordSaver(props: IRecordSaverProps) {
     })
 
   const removeReminder = (reminderToRemove: IReminder) =>
-    setAddedTags(prev =>
+    setAddedReminders(prev =>
       prev.filter(reminder => reminder.id !== reminderToRemove.id)
     )
 

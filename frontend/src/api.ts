@@ -1,4 +1,4 @@
-import { config } from '../config'
+import { config } from './config'
 
 const getRecords = () =>
   fetch(`${config.backendUrl}/records`).then(r => r.json())

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { api, ICreatedRecord, IUpdatedRecord } from '../../api'
+import { api, ICreatedRecord, IUpdatedRecord } from '../api'
 
 export interface IRecordTag {
   id: number
