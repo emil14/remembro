@@ -7,7 +7,7 @@ import { ICreatedRecord } from '../../api'
 import { useSync } from '../../hooks'
 import { RootState } from '../../store'
 import { IFullTag } from '../../store/tags'
-import { IRecordTag, IReminder } from '../../store/records'
+import { IRecordTag } from '../../store/records'
 import ReminderSvg from '../icons/reminder.svg'
 import ReminderSmallSvg from '../icons/reminder_small.svg'
 import { TextArea } from '../shared/TextArea'
@@ -21,7 +21,7 @@ interface IRecordSaverProps {
   initialContent: string
   initialCreatedAt: string
   initialTags: IRecordTag[]
-  initialReminders: IReminder[]
+  initialReminders: string[]
   onSave(record: ICreatedRecord): void
 }
 
@@ -51,12 +51,18 @@ export function RecordSaver(props: IRecordSaverProps) {
     props.onSave({
       content,
       tagsIds: addedTags.map(tag => tag.id),
-      reminders: [], // TODO
+      reminders: addedReminders,
     })
 
-  const removeReminder = (reminderToRemove: IReminder) =>
+  const addReminder = (reminderToAdd: string) => {
+    if (!addedReminders.includes(reminderToAdd)) {
+      setAddedReminders(prev => [...prev, reminderToAdd])
+    }
+  }
+
+  const removeReminder = (reminderToRemove: string) =>
     setAddedReminders(prev =>
-      prev.filter(reminder => reminder.id !== reminderToRemove.id)
+      prev.filter(reminder => reminder !== reminderToRemove)
     )
 
   return (
@@ -85,10 +91,10 @@ export function RecordSaver(props: IRecordSaverProps) {
             {addedReminders.map(reminder => (
               <Badge
                 icon={<ReminderSmallSvg />}
-                name={format(new Date(reminder.time), 'yyyy.mm.dd')}
+                name={format(new Date(reminder), 'yyyy.mm.dd')}
                 onClick={() => removeReminder(reminder)}
                 className={css.reminder}
-                key={reminder.id}
+                key={reminder}
               />
             ))}
           </div>
@@ -103,7 +109,7 @@ export function RecordSaver(props: IRecordSaverProps) {
             className={css.select}
           />
           <Button
-            onClick={console.log}
+            onClick={() => addReminder('2012-01-11T00:51:14Z')}
             theme="inverted"
             className={css.reminder_button}
           >

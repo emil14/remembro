@@ -5,17 +5,13 @@ export interface IRecordTag {
   id: number
   name: string
 }
-export interface IReminder {
-  id: number
-  time: string
-}
 
 export interface IRecord {
   id: number
   content: string
   createdAt: string
   tags: IRecordTag[]
-  reminders: IReminder[]
+  reminders: string[]
 }
 
 export type RecordsState =
