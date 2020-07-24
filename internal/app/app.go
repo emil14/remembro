@@ -40,24 +40,19 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func createRecord(w http.ResponseWriter, r *http.Request) {
-	type createdRecord struct {
-		Content   string      `json:"content"`
-		TagsIds   []int       `json:"tagsIds"`
-		Reminders []time.Time `json:"reminders"`
-	}
-	var c createdRecord
-	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+	var payload models.CreateRecordPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-	if err := models.CreateRecord(c.Content, time.Now(), c.TagsIds, c.Reminders); err != nil {
+	if err := models.CreateRecord(payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Record created")) // TODO return created record
+	w.Write([]byte("Record created"))
 }
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {

@@ -76,15 +76,26 @@ func GetRecords() ([]Record, error) {
 	return records, nil
 }
 
+// CreateRecordPayload represents a payload for adding rows to database
+type CreateRecordPayload struct {
+	Content   string      `json:"content"`
+	TagsIds   []int       `json:"tagsIds"`
+	Reminders []time.Time `json:"reminders"`
+}
+
 // CreateRecord adds rows to record and tag_record tables
-func CreateRecord(content string, createdAt time.Time, tags []int, reminders []time.Time) error {
+func CreateRecord(payload CreateRecordPayload) error {
 	var lastInsertID int
-	row := db.QueryRow("INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id", content, createdAt, reminders)
+	var times []string
+	for _, v := range payload.Reminders {
+		times = append(times, v.String())
+	}
+	row := db.QueryRow("INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id", payload.Content, time.Now(), pq.Array(times))
 	if err := row.Scan(&lastInsertID); err != nil {
 		return err
 	}
-	for i := range tags {
-		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", tags[i], lastInsertID)
+	for i := range payload.TagsIds {
+		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", payload.TagsIds[i], lastInsertID)
 		if err != nil {
 			return err
 		}
@@ -109,4 +120,15 @@ func UpdateRecord(id int, content string, tags []int, reminders []time.Time) err
 		}
 	}
 	return err
+}
+
+// DeleteRecord deletes record by id
+func DeleteRecord(id int) error {
+	if _, err := db.Exec("DELETE record WHERE record_id = $1", id); err != nil {
+		return err
+	}
+	if _, err := db.Exec("DELETE tar_record WHERE /* id */ = $1", id); err != nil {
+		return err
+	}
+	return nil
 }
