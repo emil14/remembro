@@ -3,38 +3,33 @@ package models
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/lib/pq"
 )
 
-type tagRow struct {
+type recordTag struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
-type reminderRow struct {
-	ID   int       `json:"id"`
-	Time time.Time `json:"time"`
-}
 
-// Record describes record row with aggregated tags ids
+// Record represents a record entity
 type Record struct {
-	ID        int           `json:"id"`
-	Content   string        `json:"content"`
-	CreatedAt time.Time     `json:"createdAt"`
-	Tags      []tagRow      `json:"tags"`
-	Reminders []reminderRow `json:"reminders"`
+	ID        int         `json:"id"`
+	Content   string      `json:"content"`
+	CreatedAt time.Time   `json:"createdAt"`
+	Tags      []recordTag `json:"tags"`
+	Reminders []time.Time `json:"reminders"`
 }
 
-var selectRecordsQuery = `
+var getRecordsQuery = `
 SELECT r.record_id,
 	r.content,
 	r.created_at,
+	r.reminders,
 	CASE
 		WHEN t.tags IS NULL THEN '[]'::json
 		ELSE t.tags
-	END AS tags,
-	CASE
-		WHEN rm.reminders IS NULL THEN '[]'::json
-		ELSE rm.reminders
-	END AS reminders
+	END AS tags
 FROM record r
 	LEFT JOIN (
 		SELECT record_id,
@@ -44,19 +39,11 @@ FROM record r
 		FROM tag t
 			INNER JOIN tag_record tr ON tr.tag_id = t.tag_id
 		GROUP BY tr.record_id
-	) as t ON t.record_id = r.record_id
-	LEFT JOIN (
-		SELECT record_id,
-			JSON_AGG(
-				JSON_BUILD_OBJECT('id', rm.reminder_id, 'time', rm.time)
-			) AS reminders
-		FROM reminder rm
-		GROUP BY record_id
-	) as rm ON rm.record_id = r.record_id`
+	) as t ON t.record_id = r.record_id`
 
-// GetRecords joins record, tag, tag_record and reminder tables to return records with related information
+// GetRecords joins record, tag and tag_record tables
 func GetRecords() ([]Record, error) {
-	rows, err := db.Query(selectRecordsQuery)
+	rows, err := db.Query(getRecordsQuery)
 	if err != nil {
 		return nil, err
 	}
@@ -64,14 +51,22 @@ func GetRecords() ([]Record, error) {
 
 	records := []Record{}
 	for rows.Next() {
-		var tagsJSON []byte
-		var remindersJSON []byte
 		r := Record{}
-		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, &tagsJSON, &remindersJSON); err != nil {
+		var (
+			tagsJSON     []byte
+			rawReminders []string
+		)
+		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, pq.Array(&rawReminders), &tagsJSON); err != nil {
 			return nil, err
 		}
 		json.Unmarshal(tagsJSON, &r.Tags)
-		json.Unmarshal(remindersJSON, &r.Reminders)
+		for _, v := range rawReminders {
+			time, err := pq.ParseTimestamp(nil, string(v))
+			if err != nil {
+				return nil, err
+			}
+			r.Reminders = append(r.Reminders, time)
+		}
 		records = append(records, r)
 	}
 	if err = rows.Err(); err != nil {
@@ -82,9 +77,9 @@ func GetRecords() ([]Record, error) {
 }
 
 // CreateRecord adds rows to record and tag_record tables
-func CreateRecord(content string, createdAt time.Time, tags []int) error {
+func CreateRecord(content string, createdAt time.Time, tags []int, reminders []time.Time) error {
 	var lastInsertID int
-	row := db.QueryRow("INSERT INTO record(content, created_at) VALUES ($1, $2) RETURNING record_id", content, createdAt)
+	row := db.QueryRow("INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id", content, createdAt, reminders)
 	if err := row.Scan(&lastInsertID); err != nil {
 		return err
 	}
@@ -98,8 +93,8 @@ func CreateRecord(content string, createdAt time.Time, tags []int) error {
 }
 
 // UpdateRecord updates record and tag_record tables
-func UpdateRecord(id int, content string, tags []int) error {
-	_, err := db.Exec("UPDATE record SET content = $1 WHERE record_id = $2", content, id)
+func UpdateRecord(id int, content string, tags []int, reminders []time.Time) error {
+	_, err := db.Exec("UPDATE record SET content = $1, reminders = $2 WHERE record_id = $3", content, reminders, id)
 	if err != nil {
 		return err
 	}
