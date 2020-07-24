@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/emil14/remembro/conf"
+	"github.com/emil14/remembro/config"
 	"github.com/emil14/remembro/models"
 )
 
@@ -41,8 +41,9 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 
 func createRecord(w http.ResponseWriter, r *http.Request) {
 	type createdRecord struct {
-		Content string `json:"content"`
-		TagsIds []int  `json:"tagsIds"`
+		Content   string      `json:"content"`
+		TagsIds   []int       `json:"tagsIds"`
+		Reminders []time.Time `json:"reminders"`
 	}
 	var c createdRecord
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
@@ -50,7 +51,7 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-	if err := models.CreateRecord(c.Content, time.Now(), c.TagsIds); err != nil {
+	if err := models.CreateRecord(c.Content, time.Now(), c.TagsIds, c.Reminders); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
@@ -62,9 +63,10 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 func updateRecord(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PATCH" {
 		type recordToUpdate struct {
-			ID      int    `json:"id"`
-			Content string `json:"content"`
-			TagsIds []int  `json:"tagsIds"`
+			ID        int         `json:"id"`
+			Content   string      `json:"content"`
+			TagsIds   []int       `json:"tagsIds"`
+			Reminders []time.Time `json:"Reminders"`
 		}
 		var c recordToUpdate
 		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
@@ -72,7 +74,7 @@ func updateRecord(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}
-		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds); err != nil {
+		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds, c.Reminders); err != nil {
 			fmt.Println(err.Error())
 			http.Error(w, http.StatusText(500), 500)
 			return
@@ -125,8 +127,8 @@ func main() {
 	r.HandleFunc("/api/tags", getTags).Methods("GET")
 	r.HandleFunc("/api/tags", createTag).Methods("POST")
 
-	fmt.Println("---\nServer running on port: " + conf.ServerPort + "\n---")
-	if err := http.ListenAndServe(":"+conf.ServerPort, r); err != nil {
+	fmt.Println("---\nServer running on port: " + config.ServerPort + "\n---")
+	if err := http.ListenAndServe(":"+config.ServerPort, r); err != nil {
 		defer log.Fatal(err)
 	}
 }
