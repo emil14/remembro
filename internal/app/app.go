@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"bytes"
@@ -10,8 +10,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/emil14/remembro/conf"
-	"github.com/emil14/remembro/models"
+	"github.com/emil14/remembro/internal/config"
+	"github.com/emil14/remembro/internal/models"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -40,31 +40,28 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func createRecord(w http.ResponseWriter, r *http.Request) {
-	type createdRecord struct {
-		Content string `json:"content"`
-		TagsIds []int  `json:"tagsIds"`
-	}
-	var c createdRecord
-	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+	var payload models.CreateRecordPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
-	if err := models.CreateRecord(c.Content, time.Now(), c.TagsIds); err != nil {
+	if err := models.CreateRecord(payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Record created")) // TODO return created record
+	w.Write([]byte("Record created"))
 }
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PATCH" {
 		type recordToUpdate struct {
-			ID      int    `json:"id"`
-			Content string `json:"content"`
-			TagsIds []int  `json:"tagsIds"`
+			ID        int         `json:"id"`
+			Content   string      `json:"content"`
+			TagsIds   []int       `json:"tagsIds"`
+			Reminders []time.Time `json:"Reminders"`
 		}
 		var c recordToUpdate
 		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
@@ -72,7 +69,7 @@ func updateRecord(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}
-		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds); err != nil {
+		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds, c.Reminders); err != nil {
 			fmt.Println(err.Error())
 			http.Error(w, http.StatusText(500), 500)
 			return
@@ -112,7 +109,8 @@ func createTag(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Tag created")) // TODO return created
 }
 
-func main() {
+// Run starts the application
+func Run() {
 	closeDB := models.InitDB()
 	defer closeDB()
 
@@ -125,8 +123,8 @@ func main() {
 	r.HandleFunc("/api/tags", getTags).Methods("GET")
 	r.HandleFunc("/api/tags", createTag).Methods("POST")
 
-	fmt.Println("---\nServer running on port: " + conf.ServerPort + "\n---")
-	if err := http.ListenAndServe(":"+conf.ServerPort, r); err != nil {
+	fmt.Println("---\nServer running on port: " + config.ServerPort + "\n---")
+	if err := http.ListenAndServe(":"+config.ServerPort, r); err != nil {
 		defer log.Fatal(err)
 	}
 }

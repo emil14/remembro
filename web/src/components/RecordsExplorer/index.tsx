@@ -40,9 +40,9 @@ export function RecordsExplorer(props: IRecordsExplorerProps) {
           {record.reminders && (
             <div className={css.reminders}>
               {record.reminders.map(reminder => (
-                <div className={css.reminder} key={reminder.id}>
+                <div className={css.reminder} key={reminder}>
                   <ReminderSVG className={css.reminderIcon} />
-                  {format(new Date(reminder.time), 'yyyy.mm.dd')}
+                  {format(new Date(reminder), 'yyyy.mm.dd')}
                 </div>
               ))}
             </div>

@@ -7,11 +7,11 @@ import (
 
 	_ "github.com/lib/pq" // register driver
 
-	"github.com/emil14/remembro/conf"
+	"github.com/emil14/remembro/internal/config"
 )
 
 var db *sql.DB
-var connStr = fmt.Sprintf("user=%s password=%s dbname=%s port=%s", conf.DBUser, conf.DBPassword, conf.DBName, conf.DBPort)
+var connStr = fmt.Sprintf("user=%s password=%s dbname=%s port=%s", config.DBUser, config.DBPassword, config.DBName, config.DBPort)
 
 // InitDB opens a connection to pg with creds from env vars and returns a callback to close it
 func InitDB() func() {
