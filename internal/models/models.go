@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/emil14/remembro/config"
 	_ "github.com/lib/pq" // register driver
+
+	"github.com/emil14/remembro/internal/config"
 )
 
 var db *sql.DB

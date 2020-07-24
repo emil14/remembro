@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"bytes"
@@ -10,8 +10,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/emil14/remembro/config"
-	"github.com/emil14/remembro/models"
+	"github.com/emil14/remembro/internal/config"
+	"github.com/emil14/remembro/internal/models"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -114,7 +114,8 @@ func createTag(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Tag created")) // TODO return created
 }
 
-func main() {
+// Run starts the application
+func Run() {
 	closeDB := models.InitDB()
 	defer closeDB()
 
