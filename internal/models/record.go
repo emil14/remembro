@@ -127,7 +127,7 @@ type UpdateRecordPayload struct {
 func UpdateRecord(record UpdateRecordPayload) error {
 	reminderTimes := []string{}
 	for _, v := range record.Reminders {
-		reminderTimes = append(reminderTimes, v.Format("RFC3339"))
+		reminderTimes = append(reminderTimes, v.Format(time.RFC3339))
 	}
 
 	_, err := db.Exec(
