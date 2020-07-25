@@ -103,18 +103,29 @@ func CreateRecord(payload CreateRecordPayload) error {
 	return nil
 }
 
+// UpdateRecordPayload represents a payload for updating record and tag_record tables
+type UpdateRecordPayload struct {
+	ID        int
+	Content   string      `json:"content"`
+	TagsIds   []int       `json:"tagsIds"`
+	Reminders []time.Time `json:"reminders"`
+}
+
 // UpdateRecord updates record and tag_record tables
-func UpdateRecord(id int, content string, tags []int, reminders []time.Time) error {
-	_, err := db.Exec("UPDATE record SET content = $1, reminders = $2 WHERE record_id = $3", content, reminders, id)
+func UpdateRecord(record UpdateRecordPayload) error {
+	_, err := db.Exec(
+		"UPDATE record SET content = $1, reminders = $2 WHERE record_id = $3",
+		record.Content, record.Reminders, record.ID,
+	)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("DELETE FROM tag_record WHERE record_id = $1", id)
+	_, err = db.Exec("DELETE FROM tag_record WHERE record_id = $1", record.ID)
 	if err != nil {
 		return err
 	}
-	for _, t := range tags {
-		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", t, id)
+	for _, t := range record.TagsIds {
+		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", t, record.ID)
 		if err != nil {
 			return err
 		}

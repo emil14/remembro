@@ -1,12 +1,6 @@
-## Back-End
+# Remembro
 
 ```bash
-make dev
-```
-
-## Front-End
-
-```bash
-cd web
-npm start
+make run # backend dev-server
+make run-web # frontend dev-server
 ```

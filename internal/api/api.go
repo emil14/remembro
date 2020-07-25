@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 
@@ -57,19 +56,13 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PATCH" {
-		type recordToUpdate struct {
-			ID        int         `json:"id"`
-			Content   string      `json:"content"`
-			TagsIds   []int       `json:"tagsIds"`
-			Reminders []time.Time `json:"Reminders"`
-		}
-		var c recordToUpdate
-		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+		var record models.UpdateRecordPayload
+		if err := json.NewDecoder(r.Body).Decode(&record); err != nil {
 			fmt.Println(err.Error())
 			http.Error(w, http.StatusText(500), 500)
 			return
 		}
-		if err := models.UpdateRecord(c.ID, c.Content, c.TagsIds, c.Reminders); err != nil {
+		if err := models.UpdateRecord(record); err != nil {
 			fmt.Println(err.Error())
 			http.Error(w, http.StatusText(500), 500)
 			return
