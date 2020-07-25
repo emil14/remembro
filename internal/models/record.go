@@ -56,10 +56,13 @@ func GetRecords() ([]Record, error) {
 			tagsJSON     []byte
 			rawReminders []string
 		)
+
 		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, pq.Array(&rawReminders), &tagsJSON); err != nil {
 			return nil, err
 		}
 		json.Unmarshal(tagsJSON, &r.Tags)
+
+		r.Reminders = make([]time.Time, 0)
 		for _, v := range rawReminders {
 			time, err := pq.ParseTimestamp(nil, string(v))
 			if err != nil {
@@ -67,6 +70,7 @@ func GetRecords() ([]Record, error) {
 			}
 			r.Reminders = append(r.Reminders, time)
 		}
+
 		records = append(records, r)
 	}
 	if err = rows.Err(); err != nil {
@@ -81,40 +85,64 @@ type CreateRecordPayload struct {
 	Content   string      `json:"content"`
 	TagsIds   []int       `json:"tagsIds"`
 	Reminders []time.Time `json:"reminders"`
+	CreatedAt time.Time
 }
 
 // CreateRecord adds rows to record and tag_record tables
 func CreateRecord(payload CreateRecordPayload) error {
-	var lastInsertID int
-	var times []string
+	var reminderTimes []string
 	for _, v := range payload.Reminders {
-		times = append(times, v.String())
+		reminderTimes = append(reminderTimes, v.String())
 	}
-	row := db.QueryRow("INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id", payload.Content, time.Now(), pq.Array(times))
+
+	row := db.QueryRow(
+		"INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id",
+		payload.Content, time.Now(), pq.Array(reminderTimes),
+	)
+
+	var lastInsertID int
 	if err := row.Scan(&lastInsertID); err != nil {
 		return err
 	}
+
 	for i := range payload.TagsIds {
 		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", payload.TagsIds[i], lastInsertID)
 		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
+// UpdateRecordPayload represents a payload for updating record and tag_record tables
+type UpdateRecordPayload struct {
+	ID        int
+	Content   string      `json:"content"`
+	TagsIds   []int       `json:"tagsIds"`
+	Reminders []time.Time `json:"reminders"`
+}
+
 // UpdateRecord updates record and tag_record tables
-func UpdateRecord(id int, content string, tags []int, reminders []time.Time) error {
-	_, err := db.Exec("UPDATE record SET content = $1, reminders = $2 WHERE record_id = $3", content, reminders, id)
+func UpdateRecord(record UpdateRecordPayload) error {
+	reminderTimes := []string{}
+	for _, v := range record.Reminders {
+		reminderTimes = append(reminderTimes, v.Format(time.RFC3339))
+	}
+
+	_, err := db.Exec(
+		"UPDATE record SET content = $1, reminders = $2 WHERE record_id = $3",
+		record.Content, pq.Array(reminderTimes), record.ID,
+	)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("DELETE FROM tag_record WHERE record_id = $1", id)
+	_, err = db.Exec("DELETE FROM tag_record WHERE record_id = $1", record.ID)
 	if err != nil {
 		return err
 	}
-	for _, t := range tags {
-		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", t, id)
+	for _, tagID := range record.TagsIds {
+		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", tagID, record.ID)
 		if err != nil {
 			return err
 		}
