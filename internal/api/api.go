@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -39,12 +40,13 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func createRecord(w http.ResponseWriter, r *http.Request) {
-	var payload models.CreateRecordPayload
+	payload := models.CreateRecordPayload{}
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
+	payload.CreatedAt = time.Now()
 	if err := models.CreateRecord(payload); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
