@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq" // register driver
@@ -11,12 +10,11 @@ import (
 )
 
 var db *sql.DB
-var connStr = fmt.Sprintf("user=%s password=%s dbname=%s port=%s", config.DBUser, config.DBPassword, config.DBName, config.DBPort)
 
-// InitDB opens a connection to pg with creds from env vars and returns a callback to close it
+// InitDB opens a connection to postgres and returns a callback to close it
 func InitDB() func() {
 	var err error
-	db, err = sql.Open("postgres", connStr)
+	db, err = sql.Open("postgres", config.DATABASE_URL)
 	if err != nil {
 		log.Fatal(err)
 	}

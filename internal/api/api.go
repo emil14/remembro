@@ -118,8 +118,8 @@ func Run() {
 	r.HandleFunc("/api/tags", getTags).Methods("GET")
 	r.HandleFunc("/api/tags", createTag).Methods("POST")
 
-	fmt.Println("---\nServer running on port: " + config.ServerPort + "\n---")
-	if err := http.ListenAndServe(":"+config.ServerPort, r); err != nil {
+	fmt.Println("---\nServer running on port: " + config.PORT + "\n---")
+	if err := http.ListenAndServe(":"+config.PORT, r); err != nil {
 		defer log.Fatal(err)
 	}
 }

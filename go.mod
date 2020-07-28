@@ -8,5 +8,5 @@ require (
 	github.com/githubnemo/CompileDaemon v1.2.1 // indirect
 	github.com/gorilla/mux v1.7.4
 	github.com/joho/godotenv v1.3.0
-	github.com/lib/pq v1.7.0
+	github.com/lib/pq v1.8.0
 )
