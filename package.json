@@ -2,6 +2,6 @@
   "name": "frontend-builder",
   "version": "0.0.1",
   "scripts": {
-    "postinstall": "cd web && npm install && npm run build"
+    "postinstall": "make build-web"
   }
 }
