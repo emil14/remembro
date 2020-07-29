@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "parcel --port 3000 index.html",
-    "build": "parcel build index.html",
+    "build": "npx parcel build index.html",
     "check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier",
