@@ -3,4 +3,5 @@ run:
 run-web:
 	npm start --prefix web
 build-web:
+	npm install --prefix web
 	npm run build --prefix web

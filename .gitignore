@@ -2,3 +2,4 @@ bin
 .vscode
 .env
 main
+package-lock.json

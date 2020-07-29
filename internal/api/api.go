@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -101,7 +103,33 @@ func createTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Tag created")) // TODO return created
+	w.Write([]byte("Tag created"))
+}
+
+type spaHandler struct {
+	staticPath string
+	indexPath  string
+}
+
+func (h *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	path, err := filepath.Abs(r.URL.Path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	path = filepath.Join(h.staticPath, path)
+
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
 // Run starts the application
@@ -109,17 +137,28 @@ func Run() {
 	closeDB := models.InitDB()
 	defer closeDB()
 
-	r := mux.NewRouter()
-	r.Use(loggingMiddleware)
-	r.Use(mux.CORSMethodMiddleware(r))
-	r.HandleFunc("/api/records", getRecords).Methods("GET")
-	r.HandleFunc("/api/records", createRecord).Methods("POST")
-	r.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
-	r.HandleFunc("/api/tags", getTags).Methods("GET")
-	r.HandleFunc("/api/tags", createTag).Methods("POST")
+	router := mux.NewRouter()
+	router.Use(loggingMiddleware)
+	router.Use(mux.CORSMethodMiddleware(router))
+	router.HandleFunc("/api/records", getRecords).Methods("GET")
+	router.HandleFunc("/api/records", createRecord).Methods("POST")
+	router.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
+	router.HandleFunc("/api/tags", getTags).Methods("GET")
+	router.HandleFunc("/api/tags", createTag).Methods("POST")
 
-	fmt.Println("---\nServer running on port: " + config.PORT + "\n---")
-	if err := http.ListenAndServe(":"+config.PORT, r); err != nil {
+	spa := &spaHandler{staticPath: "web/dist", indexPath: "index.html"}
+	router.PathPrefix("/").Handler(spa)
+
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         "127.0.0.1:" + config.PORT,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	fmt.Println("---\nServer running on " + srv.Addr + "\n---")
+
+	if err := http.ListenAndServe(":"+config.PORT, router); err != nil {
 		defer log.Fatal(err)
 	}
 }

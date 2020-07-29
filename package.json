@@ -1,0 +1,7 @@
+{
+  "name": "frontend-builder",
+  "version": "0.0.1",
+  "scripts": {
+    "postinstall": "make build-web"
+  }
+}
