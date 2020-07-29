@@ -42,6 +42,8 @@ func InitDB() func() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// table creation
 	if _, err := db.Exec(createRecordTableSQL); err != nil {
 		log.Fatal(err)
 	}
@@ -51,6 +53,7 @@ func InitDB() func() {
 	if _, err := db.Exec(createTagRecordSQL); err != nil {
 		log.Fatal(err)
 	}
+
 	return func() {
 		if err := db.Close(); err != nil {
 			log.Fatal(err)
