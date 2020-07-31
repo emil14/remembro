@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 
 	"github.com/emil14/remembro/internal/config"
@@ -132,6 +133,60 @@ func (h *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
+var users = map[string]string{
+	"emil":  "fuckoff",
+	"alice": "pleace",
+}
+
+var jwtKey = []byte("my_secret_key")
+
+// Credentials is used read username and password from the request
+type Credentials struct {
+	Password string `json:"password"`
+	Username string `json:"username"`
+}
+
+// Claims is a struct that will be encoded to a JWT.
+// We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+// SignIn ...
+func SignIn(w http.ResponseWriter, r *http.Request) {
+	var creds Credentials
+	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	expectedPassword, ok := users[creds.Username]
+	if !ok || expectedPassword != creds.Password {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	expirationTime := time.Now().Add(5 * time.Minute)
+	claims := &Claims{
+		Username:       creds.Username,
+		StandardClaims: jwt.StandardClaims{ExpiresAt: expirationTime.Unix()},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenStr, err := token.SignedString(jwtKey)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   tokenStr,
+		Expires: expirationTime,
+	})
+}
+
 // Run starts the application
 func Run() {
 	closeDB := models.InitDB()
@@ -145,6 +200,10 @@ func Run() {
 	router.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
 	router.HandleFunc("/api/tags", getTags).Methods("GET")
 	router.HandleFunc("/api/tags", createTag).Methods("POST")
+
+	router.HandleFunc("/api/signin", SignIn).Methods("POST")
+	// router.HandleFunc("/welcome", Welcome).Methods("POST")
+	// router.HandleFunc("/refresh", Refresh).Methods("POST")
 
 	spa := &spaHandler{staticPath: "web/dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
