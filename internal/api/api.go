@@ -28,7 +28,7 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 	rr, err := models.GetRecords()
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
-		fmt.Println(err.Error())
+		fmt.Println(err)
 		return
 	}
 	resp, err := json.Marshal(rr)
@@ -115,21 +115,21 @@ type spaHandler struct {
 func (h *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path, err := filepath.Abs(r.URL.Path)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	path = filepath.Join(h.staticPath, path)
-
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
+		fmt.Println(err)
 		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
 		return
 	} else if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
@@ -157,12 +157,14 @@ type Claims struct {
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	expectedPassword, ok := users[creds.Username]
 	if !ok || expectedPassword != creds.Password {
+		fmt.Println("StatusUnauthorized, creds: ", creds)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -176,6 +178,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 
 	tokenStr, err := token.SignedString(jwtKey)
 	if err != nil {
+		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -183,6 +186,107 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "token",
 		Value:   tokenStr,
+		Expires: expirationTime,
+	})
+}
+
+// Welcome ...
+func Welcome(w http.ResponseWriter, r *http.Request) {
+	c, err := r.Cookie("token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	tokenStr := c.Value
+	claims := &Claims{}
+
+	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !token.Valid {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
+}
+
+// Refresh ...
+func Refresh(w http.ResponseWriter, r *http.Request) {
+	// (BEGIN) The code uptil this point is the same as the first part of the `Welcome` route
+	c, err := r.Cookie("token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	tknStr := c.Value
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		fmt.Println("invalid token", tkn)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	// (END) The code up-till this point is the same as the first part of the `Welcome` route
+
+	// ensure if the old token is within 30 seconds of expiry
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+		fmt.Printf("%v' token is too fresh", claims.Username)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Now, create a new token for the current use, with a renewed expiration time
+	expirationTime := time.Now().Add(5 * time.Minute)
+	claims.ExpiresAt = expirationTime.Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   tokenString,
 		Expires: expirationTime,
 	})
 }
@@ -201,9 +305,10 @@ func Run() {
 	router.HandleFunc("/api/tags", getTags).Methods("GET")
 	router.HandleFunc("/api/tags", createTag).Methods("POST")
 
+	// auth stuff
 	router.HandleFunc("/api/signin", SignIn).Methods("POST")
-	// router.HandleFunc("/welcome", Welcome).Methods("POST")
-	// router.HandleFunc("/refresh", Refresh).Methods("POST")
+	router.HandleFunc("/api/welcome", Welcome).Methods("GET")
+	router.HandleFunc("/api/refresh", Refresh).Methods("POST")
 
 	spa := &spaHandler{staticPath: "web/dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
