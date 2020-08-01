@@ -39,7 +39,10 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(resp)
+	if _, err := w.Write(resp); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
 
 func createRecord(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +59,10 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Record created"))
+	if _, err := w.Write([]byte("Record created")); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +80,10 @@ func updateRecord(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Record updated")) // TODO return created record
+	if _, err := w.Write([]byte("Record updated")); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
 
 func getTags(w http.ResponseWriter, r *http.Request) {
@@ -92,19 +101,30 @@ func getTags(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(resp)
+	if _, err := w.Write(resp); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
 
 func createTag(w http.ResponseWriter, r *http.Request) {
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(r.Body)
+	if _, err := buf.ReadFrom(r.Body); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 	if err := models.CreateTag(buf.String()); err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write([]byte("Tag created"))
+	if _, err := w.Write([]byte("Tag created")); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
+
 }
 
 type spaHandler struct {
@@ -226,7 +246,10 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
+	if _, err := w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username))); err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+	}
 }
 
 // Refresh ...
@@ -266,7 +289,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	// (END) The code up-till this point is the same as the first part of the `Welcome` route
 
 	// ensure if the old token is within 30 seconds of expiry
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+	if time.Until(time.Unix(claims.ExpiresAt, 0)) > 30*time.Second {
 		fmt.Printf("%v' token is too fresh", claims.Username)
 		w.WriteHeader(http.StatusBadRequest)
 		return

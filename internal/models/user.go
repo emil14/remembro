@@ -7,10 +7,8 @@ type User struct {
 
 // GetUser ...
 func GetUser() {
-	return
 }
 
 // CreateUser ...
 func CreateUser() {
-	return
 }

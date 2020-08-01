@@ -51,16 +51,18 @@ func GetRecords() ([]Record, error) {
 
 	records := []Record{}
 	for rows.Next() {
-		r := Record{}
 		var (
 			tagsJSON     []byte
 			rawReminders []string
+			r            Record
 		)
 
 		if err := rows.Scan(&r.ID, &r.Content, &r.CreatedAt, pq.Array(&rawReminders), &tagsJSON); err != nil {
 			return nil, err
 		}
-		json.Unmarshal(tagsJSON, &r.Tags)
+		if err := json.Unmarshal(tagsJSON, &r.Tags); err != nil {
+			return nil, err
+		}
 
 		r.Reminders = make([]time.Time, 0)
 		for _, v := range rawReminders {
@@ -70,7 +72,6 @@ func GetRecords() ([]Record, error) {
 			}
 			r.Reminders = append(r.Reminders, time)
 		}
-
 		records = append(records, r)
 	}
 	if err = rows.Err(); err != nil {
