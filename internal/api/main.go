@@ -49,7 +49,7 @@ func Run() {
 	router.HandleFunc("/refresh-jwt", refreshJWT).Methods("POST")
 	router.HandleFunc("/register", registerUser).Methods("POST")
 	
-	protectedRouter := mux.NewRouter().PathPrefix("/api/").Subrouter()
+	protectedRouter := router.PathPrefix("/api").Subrouter()
 	protectedRouter.Use(jwtMiddlware)
 	protectedRouter.HandleFunc("/records", getRecords).Methods("GET")
 	protectedRouter.HandleFunc("/records", createRecord).Methods("POST")
@@ -57,7 +57,7 @@ func Run() {
 	protectedRouter.HandleFunc("/tags", getTags).Methods("GET")
 	protectedRouter.HandleFunc("/tags", createTag).Methods("POST")
 
-	// router.PathPrefix("/").Handler(&spaHandler{staticPath: "web/dist", indexPath: "index.html"})
+	router.PathPrefix("/").Handler(&spaHandler{staticPath: "web/dist", indexPath: "index.html"})
 
 	srv := &http.Server{
 		Handler:      router,
