@@ -37,7 +37,6 @@ func createRecord(w http.ResponseWriter, r *http.Request) {
 		handleError(err, w, 500)
 		return
 	}
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if _, err := w.Write([]byte("Record created")); err != nil {
 		handleError(err, w, 500)
 	}

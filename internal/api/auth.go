@@ -22,7 +22,7 @@ type jwtClaims struct {
 	jwt.StandardClaims
 }
 
-func signIn(w http.ResponseWriter, r *http.Request) {
+func login(w http.ResponseWriter, r *http.Request) {
 	creds := credentials{}
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
 		handleError(err, w, 500)
@@ -33,14 +33,16 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		handleError(err, w, 500)
 	} else if creds.Password != user.Password {
-		handleError(fmt.Errorf("Unauthorized - %v : %v", creds.Password, creds.Email), w, http.StatusUnauthorized)
+		handleError(fmt.Errorf("Unauthorized! Expected %v, got %v", user.Password, creds.Password), w, http.StatusUnauthorized)
 		return
 	}
 
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims := &jwtClaims{
 		Username:       creds.Email,
-		StandardClaims: jwt.StandardClaims{ExpiresAt: expirationTime.Unix()},
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -58,6 +60,8 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
+	// authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+
 	c, err := r.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -87,23 +91,12 @@ func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
 	return true, claims
 }
 
-func welcome(w http.ResponseWriter, r *http.Request) {
-	ok, claims := checkJWTCookie(w, r)
-	if !ok {
-		return
-	}
-	_, err := w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
-	if err != nil {
-		handleError(err, w, 500)
-	}
-}
-
 func refreshJWT(w http.ResponseWriter, r *http.Request) {
-	ok, claims := checkJWTCookie(w, r)
+	ok, claims := checkJWTCookie(w, r) // FIXME not call this here, there is middlware
 	if !ok {
 		return
 	}
-
+	
 	if time.Until(time.Unix(claims.ExpiresAt, 0)) > 30*time.Second {
 		handleError(fmt.Errorf("%v' token is too fresh", claims.Username), w, http.StatusBadRequest)
 		return
@@ -124,4 +117,20 @@ func refreshJWT(w http.ResponseWriter, r *http.Request) {
 		Value:   tokenString,
 		Expires: expirationTime,
 	})
+}
+
+func registerUser(w http.ResponseWriter, r *http.Request) {
+	creds := credentials{}
+	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		handleError(err, w, 500)
+		return
+	}
+	
+	if err := db.CreateUser(creds.Email, creds.Password); err != nil {
+		handleError(err, w, 500)
+	}
+
+	if _, err := w.Write([]byte("User created")); err != nil {
+		handleError(err, w, 500)
+	}
 }

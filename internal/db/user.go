@@ -1,5 +1,9 @@
 package db
 
+import (
+	"fmt"
+)
+
 // User ...
 type User struct {
 	ID       int    `json:"id"`
@@ -7,17 +11,24 @@ type User struct {
 	Password string `json:"password"`
 }
 
-// GetUser ...
+// GetUser retrieves a user from database by email
 func GetUser(email string) (*User, error) {
-	rows, err := db.Query("SELECT user_id, email, password FROM user WHERE email = email")
+	rows, err := db.Query("SELECT user_id, email, password FROM users WHERE email = $1", email)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	user := User{}
-	if err := rows.Scan(&user.ID, &user.Email, &user.Password); err != nil {
-		return nil, err
+	user_found := false
+	for rows.Next() {
+		user_found = true
+		if err := rows.Scan(&user.ID, &user.Email, &user.Password); err != nil {
+			return nil, err
+		}
+	}
+	if !user_found {
+		return nil, fmt.Errorf("No user with email - %v", email)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err

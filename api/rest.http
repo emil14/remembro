@@ -1,4 +1,4 @@
-POST http://localhost:9000/api/signin
+POST http://localhost:9000/login
 Content-Type: application/json
 
 {
@@ -8,10 +8,19 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:9000/api/welcome
+GET http://localhost:9000/api/records
 Content-Type: application/json
 
 ### 
 
 POST http://localhost:9000/api/refresh
 
+###
+
+POST http://localhost:9000/register
+Content-Type: application/json
+
+{
+    "username": "emil",
+    "password": "fuckoff"
+}
