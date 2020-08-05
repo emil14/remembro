@@ -1,3 +1,3 @@
 export const config = {
-  backendUrl: `/api`,
+  apiPort: process.env.PORT
 }

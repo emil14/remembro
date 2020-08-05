@@ -11,10 +11,11 @@ import format from 'date-fns/format'
 import cn from 'classnames'
 
 import { routingMap } from '../routing'
-import { ICreatedRecord } from '../api'
+import { IRecordToCreate } from '../api'
 import { IRecord } from '../store/records'
 import { fetchRecords, createRecord, updateRecord } from '../store/records'
 import { fetchTags } from '../store/tags'
+import { registerUser, authorizeUser } from '../store/auth'
 
 import { TextArea } from './shared/TextArea'
 import { RecordSaver } from './RecordSaver'
@@ -35,16 +36,25 @@ export function App() {
     dispatch(fetchTags())
   }, [])
 
-  const handleCreateRecord = (created: ICreatedRecord) => {
+  const handleCreateRecord = (created: IRecordToCreate) => {
     dispatch(createRecord(created))
     setDraftSelection('')
   }
-  const handleUpdateRecord = (updatedRecord: ICreatedRecord) => {
+  const handleUpdateRecord = (updatedRecord: IRecordToCreate) => {
     if (selectedRecord) {
       dispatch(updateRecord({ id: selectedRecord.id, ...updatedRecord }))
       setSelectedRecord(null)
     }
   }
+
+  useEffect(() => {
+    const creds = {
+      email: 'emil.musician@gmail.com',
+      password: '__fuckoff__remembro',
+    }
+    // dispatch(registerUser(creds))
+    dispatch(authorizeUser(creds))
+  }, [])
 
   return (
     <div className={css.app}>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { api, ICreatedRecord, IUpdatedRecord } from '../api'
+import { api, IRecordToCreate, IRecordToUpdate } from '../api'
 
 export interface IRecordTag {
   id: number
@@ -32,15 +32,15 @@ export const fetchRecords = createAsyncThunk(
 
 export const createRecord = createAsyncThunk(
   'records/createRecord',
-  async (record: ICreatedRecord, thunkAPI) => {
+  async (record: IRecordToCreate, thunkAPI) => {
     await api.createRecord(record)
     thunkAPI.dispatch(fetchRecords())
   }
 )
 
 export const updateRecord = createAsyncThunk(
-  'records/createRecord',
-  async (record: IUpdatedRecord, thunkAPI) => {
+  'records/updateRecord',
+  async (record: IRecordToUpdate, thunkAPI) => {
     await api.updateRecord(record)
     thunkAPI.dispatch(fetchRecords())
   }

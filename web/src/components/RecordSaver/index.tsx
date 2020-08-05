@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useSelector, shallowEqual } from 'react-redux'
 import { format } from 'date-fns'
 
-import { ICreatedRecord } from '../../api'
+import { IRecordToCreate } from '../../api'
 import { useSync } from '../../hooks'
 import { RootState } from '../../store'
 import { IFullTag } from '../../store/tags'
@@ -22,7 +22,7 @@ interface IRecordSaverProps {
   initialCreatedAt: string
   initialTags: IRecordTag[]
   initialReminders: string[]
-  onSave(record: ICreatedRecord): void
+  onSave(record: IRecordToCreate): void
 }
 
 export function RecordSaver(props: IRecordSaverProps) {

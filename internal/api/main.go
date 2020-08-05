@@ -37,6 +37,12 @@ func handleError(err error, w http.ResponseWriter, statusCode int) {
 	w.WriteHeader(statusCode)
 }
 
+func notFound(w http.ResponseWriter, r *http.Request) {
+	if _, err := w.Write([]byte("Not found!")); err != nil {
+		handleError(err, w, 500)
+	}
+}
+
 // Run starts the application
 func Run() {
 	closeDB := db.InitDB()
@@ -56,6 +62,7 @@ func Run() {
 	protectedRouter.HandleFunc("/records", updateRecord).Methods("PATCH", "OPTIONS")
 	protectedRouter.HandleFunc("/tags", getTags).Methods("GET")
 	protectedRouter.HandleFunc("/tags", createTag).Methods("POST")
+	protectedRouter.HandleFunc("/", notFound)
 
 	router.PathPrefix("/").Handler(&spaHandler{staticPath: "web/dist", indexPath: "index.html"})
 
@@ -66,7 +73,7 @@ func Run() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	fmt.Println("---\nServer running on " + srv.Addr + "\n---")	
+	fmt.Println("---\nServer running on " + srv.Addr + "\n---")
 
 	if err := http.ListenAndServe(":"+config.PORT, router); err != nil {
 		defer log.Fatal(err)
