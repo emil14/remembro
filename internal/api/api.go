@@ -322,13 +322,12 @@ func Run() {
 	router := mux.NewRouter()
 	router.Use(loggingMiddleware)
 	router.Use(mux.CORSMethodMiddleware(router))
+
 	router.HandleFunc("/api/records", getRecords).Methods("GET")
 	router.HandleFunc("/api/records", createRecord).Methods("POST")
 	router.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
 	router.HandleFunc("/api/tags", getTags).Methods("GET")
 	router.HandleFunc("/api/tags", createTag).Methods("POST")
-
-	// auth stuff
 	router.HandleFunc("/api/signin", SignIn).Methods("POST")
 	router.HandleFunc("/api/welcome", Welcome).Methods("GET")
 	router.HandleFunc("/api/refresh", Refresh).Methods("POST")

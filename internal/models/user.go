@@ -2,7 +2,7 @@ package models
 
 // User ...
 type User struct {
-	name string
+	email string
 }
 
 // GetUser ...
