@@ -25,13 +25,19 @@ var (
 			parent_id INT REFERENCES tag(tag_id),
 			description VARCHAR(255) DEFAULT ''
 		)`
-	createTagRecordSQL = `
+	createTagRecordTableSQL = `
 		CREATE TABLE IF NOT EXISTS tag_record (
 			tag_id INT,
 			record_id INT,
 			PRIMARY KEY (tag_id, record_id),
 			FOREIGN KEY (tag_id) REFERENCES tag(tag_id) ON UPDATE CASCADE,
 			FOREIGN KEY (record_id) REFERENCES record(record_id) ON UPDATE CASCADE
+		)`
+	createUsersTableSQL = `
+		CREATE TABLE IF NOT EXISTS users (
+			user_id SERIAL PRIMARY KEY,
+			email VARCHAR(32) UNIQUE NOT NULL,
+			password VARCHAR(32) NOT NULL
 		)`
 )
 
@@ -50,7 +56,10 @@ func InitDB() func() {
 	if _, err := db.Exec(createTagTableSQL); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := db.Exec(createTagRecordSQL); err != nil {
+	if _, err := db.Exec(createTagRecordTableSQL); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := db.Exec(createUsersTableSQL); err != nil {
 		log.Fatal(err)
 	}
 
