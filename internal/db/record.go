@@ -1,4 +1,4 @@
-package models
+package db
 
 import (
 	"encoding/json"
@@ -42,7 +42,7 @@ FROM record r
 	) as t ON t.record_id = r.record_id`
 
 // GetRecords joins record, tag and tag_record tables
-func GetRecords() ([]Record, error) {
+func GetRecords(userIDs ...int) ([]Record, error) {
 	rows, err := db.Query(getRecordsQuery)
 	if err != nil {
 		return nil, err
