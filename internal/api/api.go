@@ -21,7 +21,6 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 func handleError(err error, w http.ResponseWriter, statusCode int) {
 	log.Println(err)
-	http.Error(w, http.StatusText(500), 500)
 	w.WriteHeader(statusCode)
 }
 
@@ -39,9 +38,9 @@ func Run() {
 	router.HandleFunc("/api/records", updateRecord).Methods("PATCH", "OPTIONS")
 	router.HandleFunc("/api/tags", getTags).Methods("GET")
 	router.HandleFunc("/api/tags", createTag).Methods("POST")
-	router.HandleFunc("/api/signin", SignIn).Methods("POST")
-	router.HandleFunc("/api/welcome", Welcome).Methods("GET")
-	router.HandleFunc("/api/refresh", RefreshJWT).Methods("POST")
+	router.HandleFunc("/api/signin", signIn).Methods("POST")
+	router.HandleFunc("/api/welcome", welcome).Methods("GET")
+	router.HandleFunc("/api/refresh", refreshJWT).Methods("POST")
 
 	spa := &spaHandler{staticPath: "web/dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)

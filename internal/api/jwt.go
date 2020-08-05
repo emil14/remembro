@@ -12,22 +12,18 @@ import (
 
 var jwtKey = []byte("my_secret_key")
 
-// Credentials is used read username and password from the request
-type Credentials struct {
+type credentials struct {
 	Email    string `json:"username"`
 	Password string `json:"password"`
 }
 
-// Claims is a struct that will be encoded to a JWT.
-// We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
-type Claims struct {
+type jwtClaims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
-// SignIn ...
-func SignIn(w http.ResponseWriter, r *http.Request) {
-	creds := Credentials{}
+func signIn(w http.ResponseWriter, r *http.Request) {
+	creds := credentials{}
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
 		handleError(err, w, 500)
 		return
@@ -42,7 +38,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	expirationTime := time.Now().Add(5 * time.Minute)
-	claims := &Claims{
+	claims := &jwtClaims{
 		Username:       creds.Email,
 		StandardClaims: jwt.StandardClaims{ExpiresAt: expirationTime.Unix()},
 	}
@@ -61,7 +57,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *Claims) {
+func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
 	c, err := r.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -72,7 +68,7 @@ func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *Claims) {
 		return false, nil
 	}
 	tknStr := c.Value
-	claims := &Claims{}
+	claims := &jwtClaims{}
 	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
@@ -91,8 +87,7 @@ func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *Claims) {
 	return true, claims
 }
 
-// Welcome ...
-func Welcome(w http.ResponseWriter, r *http.Request) {
+func welcome(w http.ResponseWriter, r *http.Request) {
 	ok, claims := checkJWTCookie(w, r)
 	if !ok {
 		return
@@ -103,8 +98,7 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// RefreshJWT ...
-func RefreshJWT(w http.ResponseWriter, r *http.Request) {
+func refreshJWT(w http.ResponseWriter, r *http.Request) {
 	ok, claims := checkJWTCookie(w, r)
 	if !ok {
 		return

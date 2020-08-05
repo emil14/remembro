@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/joho/godotenv/autoload" // read .env
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func getEnv(s string) string {
