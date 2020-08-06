@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS users_record;
 CREATE TABLE users_record (
     record_id INT,
     user_id INT,
