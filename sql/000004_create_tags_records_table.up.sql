@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS tag_record;
 CREATE TABLE tag_record (
     tag_id INT,
     record_id INT,
