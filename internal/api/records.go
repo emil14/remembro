@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -9,7 +10,13 @@ import (
 )
 
 func getRecords(w http.ResponseWriter, r *http.Request) {
-	rr, err := db.GetRecords()
+	ctxUserID := r.Context().Value("userid")
+	if ctxUserID == nil {
+		handleError(fmt.Errorf("No userid provided!"), w, 500)
+		return
+	}
+	
+	rr, err := db.GetRecords(ctxUserID.(int))
 	if err != nil {
 		handleError(err, w, 500)
 		return

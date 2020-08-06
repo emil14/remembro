@@ -26,8 +26,8 @@ func jwtMiddlware(next http.Handler) http.Handler {
 		if !ok {
 			return
 		}
-		type ctxClaimsKey string
-		ctx := context.WithValue(r.Context(), ctxClaimsKey("props"), claims)
+		type userid string
+		ctx := context.WithValue(r.Context(), userid("userid"), claims.ID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -62,7 +62,7 @@ func Run() {
 	protectedRouter.HandleFunc("/records", updateRecord).Methods("PATCH", "OPTIONS")
 	protectedRouter.HandleFunc("/tags", getTags).Methods("GET")
 	protectedRouter.HandleFunc("/tags", createTag).Methods("POST")
-	protectedRouter.HandleFunc("/", notFound)
+	protectedRouter.HandleFunc("/", notFound) // FIXME
 
 	router.PathPrefix("/").Handler(&spaHandler{staticPath: "web/dist", indexPath: "index.html"})
 
