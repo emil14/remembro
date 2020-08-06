@@ -12,13 +12,15 @@ import (
 
 var jwtKey = []byte("my_secret_key")
 
+// to read from json
 type credentials struct {
-	Email    string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
+// to create token
 type jwtClaims struct {
-	Username string `json:"username"`
+	ID    int    `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -39,7 +41,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims := &jwtClaims{
-		Username:       creds.Email,
+		ID:    user.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -60,9 +62,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
-	// authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
-
-	c, err := r.Cookie("token")
+	cookie, err := r.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
 			handleError(err, w, http.StatusUnauthorized)
@@ -71,7 +71,7 @@ func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
 		handleError(err, w, http.StatusBadRequest)
 		return false, nil
 	}
-	tknStr := c.Value
+	tknStr := cookie.Value
 	claims := &jwtClaims{}
 	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
@@ -96,9 +96,9 @@ func refreshJWT(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	
+
 	if time.Until(time.Unix(claims.ExpiresAt, 0)) > 30*time.Second {
-		handleError(fmt.Errorf("%v' token is too fresh", claims.Username), w, http.StatusBadRequest)
+		handleError(fmt.Errorf("%v' token is too fresh", claims.ID), w, http.StatusBadRequest)
 		return
 	}
 
@@ -125,7 +125,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		handleError(err, w, 500)
 		return
 	}
-	
+
 	if err := db.CreateUser(creds.Email, creds.Password); err != nil {
 		handleError(err, w, 500)
 	}

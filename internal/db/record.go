@@ -7,11 +7,13 @@ import (
 	"github.com/lib/pq"
 )
 
+// FIXME should not know about json
 type recordTag struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
+// FIXME should not know about json
 // Record represents a record entity
 type Record struct {
 	ID        int         `json:"id"`
@@ -42,7 +44,7 @@ FROM record r
 	) as t ON t.record_id = r.record_id`
 
 // GetRecords joins record, tag and tag_record tables
-func GetRecords(userIDs ...int) ([]Record, error) {
+func GetRecords(userID int) ([]Record, error) {
 	rows, err := db.Query(getRecordsQuery)
 	if err != nil {
 		return nil, err
@@ -81,12 +83,14 @@ func GetRecords(userIDs ...int) ([]Record, error) {
 	return records, nil
 }
 
+// FIXME should not know about json
 // CreateRecordPayload represents a payload for adding rows to database
 type CreateRecordPayload struct {
 	Content   string      `json:"content"`
 	TagsIds   []int       `json:"tagsIds"`
 	Reminders []time.Time `json:"reminders"`
 	CreatedAt time.Time
+	UserID    int `json:"userid"`
 }
 
 // CreateRecord adds rows to record and tag_record tables
@@ -98,24 +102,30 @@ func CreateRecord(payload CreateRecordPayload) error {
 
 	row := db.QueryRow(
 		"INSERT INTO record(content, created_at, reminders) VALUES ($1, $2, $3) RETURNING record_id",
-		payload.Content, time.Now(), pq.Array(reminderTimes),
+		payload.Content, payload.CreatedAt, pq.Array(reminderTimes),
 	)
 
-	var lastInsertID int
-	if err := row.Scan(&lastInsertID); err != nil {
+	var createdRecordID int
+	if err := row.Scan(&createdRecordID); err != nil {
 		return err
 	}
 
 	for i := range payload.TagsIds {
-		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", payload.TagsIds[i], lastInsertID)
+		_, err := db.Exec("INSERT INTO tag_record(tag_id, record_id) VALUES ($1, $2)", payload.TagsIds[i], createdRecordID)
 		if err != nil {
 			return err
 		}
 	}
 
+	_, err := db.Exec("INSERT INTO users_record(user_id, record_id) VALUES ($1, $2)", payload.UserID, createdRecordID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
+// FIXME should not know about json
 // UpdateRecordPayload represents a payload for updating record and tag_record tables
 type UpdateRecordPayload struct {
 	ID        int
@@ -156,7 +166,10 @@ func DeleteRecord(id int) error {
 	if _, err := db.Exec("DELETE record WHERE record_id = $1", id); err != nil {
 		return err
 	}
-	if _, err := db.Exec("DELETE tar_record WHERE /* id */ = $1", id); err != nil {
+	if _, err := db.Exec("DELETE tar_record WHERE record_id = $1", id); err != nil {
+		return err
+	}
+	if _, err := db.Exec("DELETE users_record WHERE record_id = $1", id); err != nil {
 		return err
 	}
 	return nil
