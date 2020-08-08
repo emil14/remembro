@@ -4,7 +4,8 @@ import cn from 'classnames'
 import css from './index.css'
 
 interface IButtonProps {
-  onClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void
+  onClick?(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void
+  type: "button" | "submit" | "reset";
   className?: string
   theme?: 'normal' | 'inverted'
   children: React.ReactNode
@@ -26,6 +27,7 @@ const Button = (props: IButtonProps) => {
       onClick={props.onClick}
       disabled={props.disabled}
       title={props.title}
+      type={props.type}
     >
       {props.children}
     </button>

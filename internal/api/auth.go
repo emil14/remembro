@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -20,7 +21,7 @@ type credentials struct {
 
 // to create token
 type jwtClaims struct {
-	ID    int    `json:"id"`
+	ID int `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -34,14 +35,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 	user, err := db.GetUser(creds.Email)
 	if err != nil {
 		handleError(err, w, 500)
+		return
 	} else if creds.Password != user.Password {
-		handleError(fmt.Errorf("Unauthorized! Expected %v, got %v", user.Password, creds.Password), w, http.StatusUnauthorized)
+		handleError(fmt.Errorf("Expected password - %v, got - %v", user.Password, creds.Password), w, http.StatusUnauthorized)
 		return
 	}
 
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims := &jwtClaims{
-		ID:    user.ID,
+		ID: user.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -54,26 +56,18 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenStr,
-		Expires: expirationTime,
-	})
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Authorization", tokenStr)
 }
 
-func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
-	cookie, err := r.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			handleError(err, w, http.StatusUnauthorized)
-			return false, nil
-		}
-		handleError(err, w, http.StatusBadRequest)
+func checkJWT(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
+	token := r.Header.Get("Authorization")
+	if token == "" {
+		handleError(errors.New("No jwt provided"), w, http.StatusBadRequest)
 		return false, nil
 	}
-	tknStr := cookie.Value
 	claims := &jwtClaims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
@@ -92,7 +86,7 @@ func checkJWTCookie(w http.ResponseWriter, r *http.Request) (bool, *jwtClaims) {
 }
 
 func refreshJWT(w http.ResponseWriter, r *http.Request) {
-	ok, claims := checkJWTCookie(w, r) // FIXME not call this here, there is middlware
+	ok, claims := checkJWT(w, r) // FIXME not call this here, there is middlware
 	if !ok {
 		return
 	}
@@ -112,11 +106,8 @@ func refreshJWT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-	})
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Authorization", tokenString)
 }
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
@@ -128,9 +119,13 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := db.CreateUser(creds.Email, creds.Password); err != nil {
 		handleError(err, w, 500)
+		return
 	}
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	if _, err := w.Write([]byte("User created")); err != nil {
 		handleError(err, w, 500)
+		return
 	}
 }

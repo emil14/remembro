@@ -1,5 +1,5 @@
 bin
-.vscode
+.vscode/settings.json
 .env
 main
 package-lock.json

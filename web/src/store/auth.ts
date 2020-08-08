@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { api } from '../api'
+// import { Options } from 'jwt-decode'
+import { api, IUserCreds } from '../api'
+
+const jwtDecode = require('jwt-decode')
 
 export type User =
   | {
@@ -20,14 +23,41 @@ export type UserState = {
   error: string | null
 }
 
+function getUserInitialState(): User {
+  const token = localStorage.getItem('token')
+  if (token === null) {
+    return { isAuthethicated: false, user: null }
+  }
+  try {
+    const { id } = jwtDecode(token)
+    return {
+      isAuthethicated: true,
+      user: { id },
+    }
+  } catch (err) {
+    console.warn(`Invalid token ${token}`)
+    return { isAuthethicated: false, user: null }
+  }
+}
+
 const initialUserState: Readonly<UserState> = {
   loading: false,
-  data: { isAuthethicated: false, user: null },
+  data: getUserInitialState(),
   error: null,
 }
 
 export const registerUser = createAsyncThunk('auth/register', api.registerUser)
-export const authorizeUser = createAsyncThunk('auth/authorize', api.authorizeUser)
+
+export const authorizeUser = createAsyncThunk(
+  'auth/authorize',
+  async (creds: IUserCreds) => {
+    const resp = await api.authorizeUser(creds)
+    const token = resp.headers.get('Authorization')
+    if (token !== null) {
+      localStorage.setItem('token', token)
+    }
+  }
+)
 
 const startLoading = (state: UserState) => {
   state.loading = true

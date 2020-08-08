@@ -10,38 +10,45 @@ export interface IRecordToUpdate extends IRecordToCreate {
   id: number
 }
 
-interface IUserCreds {
+export interface IUserCreds {
   email: string
   password: string
 }
 
 const apiPath = `http://localhost:${config.apiPort}`
 
+const httpClient = (input: RequestInfo, init: RequestInit = {}) => {
+  return fetch(input, {
+    ...init,
+    headers: [['Authorization', localStorage.getItem('token') || '']],
+  })
+}
+
 export const api = {
-  getRecords: () => fetch(`${apiPath}/api/records`).then(r => r.json()),
+  getRecords: () => httpClient(`${apiPath}/api/records`).then(r => r.json()),
   createRecord: (record: IRecordToCreate) =>
-    fetch(`${apiPath}/api/records`, {
+    httpClient(`${apiPath}/api/records`, {
       method: 'POST',
       body: JSON.stringify(record),
     }),
   updateRecord: (record: IRecordToUpdate) =>
-    fetch(`${apiPath}/api/records`, {
+    httpClient(`${apiPath}/api/records`, {
       method: 'PATCH',
       body: JSON.stringify(record),
     }),
-  getTags: () => fetch(`${apiPath}/api/tags`).then(resp => resp.json()),
+  getTags: () => httpClient(`${apiPath}/api/tags`).then(resp => resp.json()),
   createTag: (name: string) =>
-    fetch(`${apiPath}/api/tags`, {
+    httpClient(`${apiPath}/api/tags`, {
       method: 'POST',
       body: JSON.stringify(name),
     }),
   registerUser: (creds: IUserCreds) =>
-    fetch(`${apiPath}/register`, {
+    httpClient(`${apiPath}/register`, {
       method: 'POST',
       body: JSON.stringify(creds),
     }),
   authorizeUser: (creds: IUserCreds) =>
-    fetch(`${apiPath}/login`, {
+    httpClient(`${apiPath}/login`, {
       method: 'POST',
       body: JSON.stringify(creds),
     }),

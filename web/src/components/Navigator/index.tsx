@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { NavLink } from 'react-router-dom'
 
-import { routingMap } from '../../routing'
+import { routes } from '../../routing'
 import PencilSvg from '../icons/pencil.svg'
 import PapersSvg from '../icons/papers.svg'
 import { Button } from '../shared/Button'
@@ -16,7 +16,7 @@ const Navigator = ({ className }: INavigatorProps) => {
   return (
     <nav className={`${css.navigator} ${className}`}>
       <NavLink
-        to={routingMap.draft}
+        to={routes.draft}
         activeClassName={css.active_tab}
         className={css.nav_link}
       >
@@ -29,7 +29,7 @@ const Navigator = ({ className }: INavigatorProps) => {
         </Button>
       </NavLink>
       <NavLink
-        to={routingMap.explorer}
+        to={routes.explorer}
         activeClassName={css.active_tab}
         className={css.nav_link}
       >

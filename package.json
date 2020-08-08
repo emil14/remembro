@@ -3,5 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "postinstall": "make build-web"
+  },
+  "dependencies": {
+    "jwt-decode": "^2.2.0"
   }
 }
