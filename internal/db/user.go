@@ -13,7 +13,7 @@ type User struct {
 
 // GetUser retrieves a user from database by email
 func GetUser(email string) (*User, error) {
-	rows, err := db.Query("SELECT user_id, email, password FROM users WHERE email = $1", email)
+	rows, err := db.Query("SELECT user_id, email, password FROM user WHERE email = $1", email)
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +39,6 @@ func GetUser(email string) (*User, error) {
 
 // CreateUser ...
 func CreateUser(email, password string) error {
-	_, err := db.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", email, password)
+	_, err := db.Exec("INSERT INTO user(email, password) VALUES ($1, $2)", email, password)
 	return err
 }

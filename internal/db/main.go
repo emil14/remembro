@@ -34,7 +34,7 @@ var (
 			FOREIGN KEY (record_id) REFERENCES record(record_id) ON UPDATE CASCADE
 		)`
 	createUsersTableSQL = `
-		CREATE TABLE IF NOT EXISTS users (
+		CREATE TABLE IF NOT EXISTS user (
 			user_id SERIAL PRIMARY KEY,
 			email VARCHAR(32) UNIQUE NOT NULL,
 			password VARCHAR(32) NOT NULL

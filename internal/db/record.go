@@ -117,7 +117,7 @@ func CreateRecord(payload CreateRecordPayload) error {
 		}
 	}
 
-	_, err := db.Exec("INSERT INTO users_record(user_id, record_id) VALUES ($1, $2)", payload.UserID, createdRecordID)
+	_, err := db.Exec("INSERT INTO user_record(user_id, record_id) VALUES ($1, $2)", payload.UserID, createdRecordID)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func DeleteRecord(id int) error {
 	if _, err := db.Exec("DELETE tar_record WHERE record_id = $1", id); err != nil {
 		return err
 	}
-	if _, err := db.Exec("DELETE users_record WHERE record_id = $1", id); err != nil {
+	if _, err := db.Exec("DELETE user_record WHERE record_id = $1", id); err != nil {
 		return err
 	}
 	return nil
